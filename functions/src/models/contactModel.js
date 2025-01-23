@@ -11,7 +11,7 @@ exports.getAllContacts = async function getAllContacts() {
         });
         return contacts;
     } catch (error) {
-        throw new Error('Error getting contacts: ' + error.message);
+        throw new Error('Error getting contacts: ' + error);
     }
 }
 

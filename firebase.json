@@ -20,12 +20,10 @@
       "**/node_modules/**"
     ],
     "redirects": [
-      {
-        "source": "**",
-        "destination": "/index.html"
-      }
+    
     ],
     "rewrites": [
+     
       {
         "source": "/api/**",
         "function": "backend_service"
