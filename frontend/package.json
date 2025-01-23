@@ -5,6 +5,7 @@
     "proxy": "http://localhost:5001/electron-dev-398915/us-central1/backend_service",
     "dependencies": {
         "cra-template": "1.2.0",
+        "firebase": "^11.2.0",
         "http-proxy-middleware": "^3.0.3",
         "react": "^19.0.0",
         "react-dom": "^19.0.0",
