@@ -3,7 +3,7 @@ const { logger } = require('firebase-functions');
 
 exports.getAllContacts = async function getAllContacts() {
     try {
-        logger.info('Fetching all contacts');
+        logger.debug('fetching contacts from contacts collection.');
         const snapshot = await db.collection('contacts').get();
         const contacts = [];
         snapshot.forEach(doc => {
@@ -11,6 +11,7 @@ exports.getAllContacts = async function getAllContacts() {
         });
         return contacts;
     } catch (error) {
+        logger.error('Error getting contacts: ', error);
         throw new Error('Error getting contacts: ' + error);
     }
 }
@@ -45,7 +46,7 @@ exports.updateContact = async function updateContact(contactId, contact) {
     }
 }
 
-exports.deleteContact =  async function deleteContact(contactId) {
+exports.deleteContact = async function deleteContact(contactId) {
     try {
         await db.collection('contacts').doc(contactId).delete();
         return true;

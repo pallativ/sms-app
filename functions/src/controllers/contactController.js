@@ -2,14 +2,9 @@ const contactService = require('../services/contactService');
 
 exports.createContact = async (req, res) => {
     try {
-        // const contact = req.body;
-        // const contactId = await contactService.createContact(contact);
-        // res.json({ id: contactId });
-
-        console.log("************ Create Contact not implemented ************");
-        console.log("************ Create Contact not implemented ************");
-        console.log("************ Create Contact not implemented ************");
-        res.status(500).send("Create Contact not implemented");
+        const contact = { Id: 1, name: 'John Doe', email: 'john@gmail.com', phone: '1234567890' };
+        const contactId = await contactService.createContact(contact);
+        res.json({ id: contactId });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
@@ -18,9 +13,6 @@ exports.createContact = async (req, res) => {
 exports.getAllContacts = async (req, res) => {
     try {
         const contacts = await contactService.getAllContacts();
-        console.log("************ Get All Contacts ************");
-        console.log("************ Get All Contacts ************");
-        console.log("************ Get All Contacts ************");
         return res.status(200).send(contacts);
     } catch (error) {
         res.status(500).json({ error: error.message });
