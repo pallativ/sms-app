@@ -5,6 +5,10 @@ exports.createContact = async (req, res) => {
         // const contact = req.body;
         // const contactId = await contactService.createContact(contact);
         // res.json({ id: contactId });
+
+        console.log("************ Create Contact not implemented ************");
+        console.log("************ Create Contact not implemented ************");
+        console.log("************ Create Contact not implemented ************");
         res.status(500).send("Create Contact not implemented");
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -14,7 +18,10 @@ exports.createContact = async (req, res) => {
 exports.getAllContacts = async (req, res) => {
     try {
         const contacts = await contactService.getAllContacts();
-        res.json(contacts);
+        console.log("************ Get All Contacts ************");
+        console.log("************ Get All Contacts ************");
+        console.log("************ Get All Contacts ************");
+        return res.status(200).send(contacts);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

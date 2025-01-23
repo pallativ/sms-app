@@ -13,6 +13,7 @@ const express = require('express');
 const contactController = require('./src/controllers/contactController');
 const contactRoutes = require('./src/routes/contactRoutes');
 const firebaseSetup = require('./firebaseSetup');
+const cors = require('cors');
 
 
 // Create and deploy your first functions
@@ -24,11 +25,14 @@ const firebaseSetup = require('./firebaseSetup');
 // });
 const app = express();
 app.use(express.json());
+// Enable CORS for cross-origin requests
+app.use(cors());
 
 app.get('/', (req, res) => {
+    console.log("************ Root Route ************");
     res.send('Hello from Express!');
 });
 
-app.use('/contacts', contactRoutes);
+app.use('/api/contacts', contactRoutes);
 
-exports.api = onRequest(app);
+exports.backend_service = onRequest(app);

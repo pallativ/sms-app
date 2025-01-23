@@ -1,7 +1,21 @@
+import React, { useEffect } from 'react';
 import logo from './logo.svg';
 import './App.css';
 
 function App() {
+  useEffect(() => {
+    callApi();
+  }, []);
+
+  const callApi = async () => {
+    try {
+      console.log('****************Calling Function API ---- fetching data***************');
+      const response = await fetch('/api/contacts');
+      console.log('****************response:***************', response);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
   return (
     <div className="App">
       <header className="App-header">
