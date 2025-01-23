@@ -1,48 +1,45 @@
 {
-  "functions": [
-    {
-      "source": "functions",
-      "codebase": "default",
-      "ignore": [
-        "node_modules",
-        ".git",
-        "firebase-debug.log",
-        "firebase-debug.*.log",
-        "*.local"
-      ]
-    }
-  ],
-  "hosting": {
-    "public": "build",
-    "ignore": [
-      "firebase.json",
-      "**/.*",
-      "**/node_modules/**"
+    "functions": [
+        {
+            "source": "functions",
+            "codebase": "default",
+            "ignore": [
+                "node_modules",
+                ".git",
+                "firebase-debug.log",
+                "firebase-debug.*.log",
+                "*.local"
+            ]
+        }
     ],
-    "redirects": [
-    
-    ],
-    "rewrites": [
-     
-      {
-        "source": "/api/**",
-        "function": "backend_service"
-      }
-    ]
-  },
-  "emulators": {
-    "functions": {
-      "port": 5001
-    },
-    "firestore": {
-      "port": 8080
-    },
     "hosting": {
-      "port": 5000
+        "public": "build",
+        "ignore": [
+            "firebase.json",
+            "**/.*",
+            "**/node_modules/**"
+        ],
+        "redirects": [],
+        "rewrites": [
+            {
+                "source": "/api/**",
+                "function": "backend_service"
+            }
+        ]
     },
-    "ui": {
-      "enabled": true
-    },
-    "singleProjectMode": true
-  }
+    "emulators": {
+        "functions": {
+            "port": 5001
+        },
+        "firestore": {
+            "port": 8080
+        },
+        "hosting": {
+            "port": 5000
+        },
+        "ui": {
+            "enabled": true
+        },
+        "singleProjectMode": true
+    }
 }
