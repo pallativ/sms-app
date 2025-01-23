@@ -7,7 +7,7 @@
  * See a full list of supported triggers at https://firebase.google.com/docs/functions
  */
 
-const {onRequest} = require("firebase-functions/v2/https");
+const { onRequest } = require("firebase-functions/v2/https");
 const logger = require("firebase-functions/logger");
 const express = require('express');
 const contactController = require('./src/controllers/contactController');
@@ -29,8 +29,7 @@ app.use(express.json());
 app.use(cors());
 
 app.get('/', (req, res) => {
-    console.log("************ Root Route ************");
-    res.send('Hello from Express!');
+    res.send('Hello from communication backend service!');
 });
 
 app.use('/api/contacts', contactRoutes);
