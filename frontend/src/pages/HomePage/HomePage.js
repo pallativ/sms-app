@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../authentication/AuthContext";
 import '../../styles/syncfusion'
 import { ButtonComponent } from '@syncfusion/ej2-react-buttons';
-
+import TopNavbar from "../../components/TopNavbar";
 const HomePage = () => {
     useEffect(() => {
         console.log("HomePage");
@@ -17,7 +17,8 @@ const HomePage = () => {
     };
 
     return (
-        <div style={{ padding: "20px" }}>
+        <div>
+            <TopNavbar />
             <h1>Welcome, {user.email}</h1>
             <ButtonComponent onClick={handleLogout} cssClass="e-primary">Logout</ButtonComponent>
         </div>
