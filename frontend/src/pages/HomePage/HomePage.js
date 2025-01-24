@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../authentication/AuthContext";
 import '../../styles/syncfusion'
 import { ButtonComponent } from '@syncfusion/ej2-react-buttons';
-import TopNavbar from "../../components/TopNavbar";
+import TopNavbar from "../../components/TopNavBar/TopNavbar";
 import HomePageContainer from "./HomePageContainer";
 
 const HomePage = () => {

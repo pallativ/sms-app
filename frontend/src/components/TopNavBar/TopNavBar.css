@@ -1,0 +1,49 @@
+/* Navbar Container */
+.custom-navbar {
+    background-color: #004d99;
+    /* Navy Blue Background */
+    color: white;
+    /* White Text */
+    padding: 10px;
+    /* Padding for better spacing */
+    font-family: 'Arial', sans-serif;
+    border-bottom: 2px solid #003366;
+    /* Add a border at the bottom */
+}
+
+/* Navbar Items */
+.custom-navbar .e-tbar-item {
+    font-size: 16px;
+    /* Font size for menu items */
+    margin: 0 10px;
+    /* Spacing between items */
+}
+
+/* Logo Section */
+.custom-navbar .e-icons.e-home {
+    font-size: 20px;
+    /* Larger size for the logo */
+    color: #ffcc00;
+    /* Gold color for the logo */
+}
+
+/* Hover Effect for Items */
+.custom-navbar .e-tbar-item:hover {
+    background-color: #003366;
+    /* Darker blue on hover */
+    color: #ffcc00;
+    /* Gold text on hover */
+    border-radius: 5px;
+    /* Rounded edges on hover */
+}
+
+/* Profile and Settings Icons */
+.custom-navbar .e-icons {
+    font-size: 18px;
+    color: white;
+}
+
+/* Add padding around the items */
+.custom-navbar .e-tbar-item>div {
+    padding: 5px 10px;
+}

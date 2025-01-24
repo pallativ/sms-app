@@ -1,11 +1,12 @@
 import React from 'react';
 import { ToolbarComponent, ItemsDirective, ItemDirective } from '@syncfusion/ej2-react-navigations';
-import { useAuth } from "../authentication/AuthContext";
+import { useAuth } from "../../authentication/AuthContext";
+import './TopNavbar';
 
 const TopNavbar = () => {
     const { user } = useAuth();
     return (
-        <ToolbarComponent>
+        <ToolbarComponent cssClass="custom-navbar">
             <ItemsDirective>
                 {/* Add the logo */}
                 <ItemDirective prefixIcon="e-icons e-home" text="" align="Left" />
