@@ -1,8 +1,8 @@
-import './App.css';
+import './styles/App.css';
 import React from "react";
 // import useAuth from './authentication/auth-state';
-import LoginPage from "./login-page";
-import HomePage from "./home-page";
+import LoginPage from "./components/login-page";
+import HomePage from "./components/home-page";
 import { AuthProvider, useAuth } from "./authentication/auth-context";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 
