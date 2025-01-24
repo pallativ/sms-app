@@ -21,3 +21,43 @@
     line-height: normal;
     /* Add some space to the left */
 }
+
+.custom-appbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 10px;
+    background-color: #007bff;
+    color: #fff;
+  }
+
+  .appbar-left,
+  .appbar-center,
+  .appbar-right {
+    display: flex;
+    align-items: center;
+  }
+
+  .profile-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+  }
+
+  .menu-button {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 16px;
+    margin: 0 10px;
+    cursor: pointer;
+  }
+
+  .menu-button .material-icons {
+    font-size: 24px;
+  }
+
+  .menu-button:hover {
+    color: #e0e0e0;
+  }

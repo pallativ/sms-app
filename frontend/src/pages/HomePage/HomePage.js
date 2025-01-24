@@ -20,13 +20,11 @@ const HomePage = () => {
     };
 
     return (
-        <div>
+        <React.Fragment>
             {/* <TopNavbar /> */}
             <AppBar></AppBar>
             <HomePageContainer />
-            <h1>Welcome, {user.email}</h1>
-            <ButtonComponent onClick={handleLogout} cssClass="e-primary">Logout</ButtonComponent>
-        </div>
+        </React.Fragment>
     );
 };
 
