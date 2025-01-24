@@ -1,0 +1,23 @@
+/* Small Button Styling */
+.small-btn {
+    font-size: 12px;
+    /* Smaller font size */
+    padding: 5px 10px;
+    /* Reduced padding */
+    border-radius: 3px;
+    /* Optional: Slightly rounded corners */
+    height: 30px;
+    /* Adjust the button height */
+    line-height: normal;
+    /* Align text properly */
+}
+
+.appName {
+    font-size: 14px;
+    /* Larger font size */
+    font-weight: bold;
+    /* Bold text */
+    margin-left: 10px;
+    line-height: normal;
+    /* Add some space to the left */
+}
