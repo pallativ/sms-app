@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../authentication/auth-context";
+import { useAuth } from "../../authentication/AuthContext";
 
 const HomePage = () => {
     useEffect(() => {
