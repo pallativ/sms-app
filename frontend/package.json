@@ -7,6 +7,7 @@
         "@syncfusion/ej2-react-base": "^28.1.38",
         "@syncfusion/ej2-react-buttons": "^28.1.39",
         "@syncfusion/ej2-react-grids": "^28.1.41",
+        "@syncfusion/ej2-react-layouts": "^28.1.33",
         "@syncfusion/ej2-react-navigations": "^28.1.41",
         "cra-template": "1.2.0",
         "firebase": "^11.2.0",

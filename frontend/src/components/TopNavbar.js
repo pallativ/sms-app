@@ -3,15 +3,14 @@ import { ToolbarComponent, ItemsDirective, ItemDirective } from '@syncfusion/ej2
 import { useAuth } from "../authentication/AuthContext";
 
 const TopNavbar = () => {
-    const { user, logout } = useAuth();
+    const { user } = useAuth();
     return (
         <ToolbarComponent>
             <ItemsDirective>
                 {/* Add the logo */}
-                <ItemDirective prefixIcon="e-icons e-home" text="Logo" align="Left" />
+                <ItemDirective prefixIcon="e-icons e-home" text="" align="Left" />
 
                 {/* Add navigation links */}
-                <ItemDirective text="Home" align="left" />
                 <ItemDirective text="Contacts" align="left" />
                 <ItemDirective text="Sms" align="left" />
                 <ItemDirective text="Contact" align="left" />
