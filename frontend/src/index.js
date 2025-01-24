@@ -3,6 +3,14 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import './styles/syncfusion'
+import { registerLicense } from '@syncfusion/ej2-base';
+
+if(process.env.REACT_APP_SYNCFUSION_LICENSE_KEY.length === 0) {
+    console.error("REACT_APP_SYNCFUSION_LICENSE_KEY is not set");
+}
+
+registerLicense(process.env.REACT_APP_SYNCFUSION_LICENSE_KEY);
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

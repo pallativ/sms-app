@@ -4,6 +4,9 @@
     "private": true,
     "proxy": "http://localhost:5001/electron-dev-398915/us-central1/backend_service",
     "dependencies": {
+        "@syncfusion/ej2-react-base": "^28.1.38",
+        "@syncfusion/ej2-react-buttons": "^28.1.39",
+        "@syncfusion/ej2-react-grids": "^28.1.41",
         "cra-template": "1.2.0",
         "firebase": "^11.2.0",
         "http-proxy-middleware": "^3.0.3",
