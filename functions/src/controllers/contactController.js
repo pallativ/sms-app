@@ -2,11 +2,11 @@ const contactService = require('../services/contactService');
 
 exports.createContact = async (req, res) => {
     try {
-        const contact = { Id: 1, name: 'John Doe', email: 'john@gmail.com', phone: '1234567890' };
-        const contactId = await contactService.createContact(contact);
+        const contactId = await contactService.createContact(req.body);
         res.json({ id: contactId });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        console.log(error);
+        res.status(500).json({ error: error });
     }
 }
 
