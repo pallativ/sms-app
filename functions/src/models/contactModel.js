@@ -16,10 +16,19 @@ exports.getAllContacts = async function getAllContacts() {
     }
 }
 
+exports.isExists = async function isExists(email) {
+    const docRef = db.collection("contacts").doc(contact.email);
+    if (docRef.get().exists) {
+        throw new Error('Contact already exists');
+    }
+}
+
+
 exports.createContact = async function createContact(contact) {
     try {
         const docRef = db.collection("contacts").doc(contact.email);
-        await docRef.set({...contact});
+        var createdAt = new Date();
+        await docRef.set({ ...contact, createdAt: createdAt, updatedAt: createdAt });
         //const res = await db.collection('contacts').add(contact);
         return docRef.id;
     } catch (error) {
