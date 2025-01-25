@@ -18,8 +18,10 @@ exports.getAllContacts = async function getAllContacts() {
 
 exports.createContact = async function createContact(contact) {
     try {
-        const res = await db.collection('contacts').add(contact);
-        return res.id;
+        const docRef = db.collection("contacts").doc(contact.email);
+        await docRef.set({...contact});
+        //const res = await db.collection('contacts').add(contact);
+        return docRef.id;
     } catch (error) {
         throw new Error('Error creating contact: ' + error.message);
     }
