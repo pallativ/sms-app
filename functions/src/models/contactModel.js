@@ -17,10 +17,8 @@ exports.getAllContacts = async function getAllContacts() {
 }
 
 exports.isExists = async function isExists(email) {
-    const docRef = db.collection("contacts").doc(contact.email);
-    if (docRef.get().exists) {
-        throw new Error('Contact already exists');
-    }
+    const doc = await db.collection("contacts").doc(email).get();
+    return doc.exists;
 }
 
 

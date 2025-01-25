@@ -43,7 +43,7 @@ exports.createContact = async (contact) => {
         validationError.statusCode = 400; // Bad Request
         throw validationError;;
     }
-    if (contactModel.isExists(value.email)) {
+    if (await contactModel.isExists(value.email)) {
         const validationError = new Error('Validation Error');
         validationError.details = [{ message: 'Contact already exists', path: ['email'] }];
         validationError.statusCode = 400; // Bad Request
