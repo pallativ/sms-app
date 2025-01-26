@@ -17,11 +17,11 @@ const AppBar = () => {
         <AppBarComponent colorMode='Primary'>
 
             <div style={{ flex: 3, textAlign: 'left' }}>
-                <span style={{paddingRight:40}}>Home</span>
-                <ButtonComponent isPrimary="true" cssClass="small-btn">SMS</ButtonComponent>
-                <ButtonComponent isPrimary="true" cssClass="small-btn">Whatsup</ButtonComponent>
-                <ButtonComponent isPrimary="true" cssClass="small-btn">Contacts</ButtonComponent>
-                <ButtonComponent isPrimary="true" cssClass="small-btn">About</ButtonComponent>
+                <span onClick={() => navigate('contacts')} style={{paddingRight:40}}>Home</span>
+                <ButtonComponent isPrimary="true" onClick={() => navigate('sms')} cssClass="small-btn">SMS</ButtonComponent>
+                <ButtonComponent isPrimary="true" onClick={() => navigate('whatsup')} cssClass="small-btn">Whatsup</ButtonComponent>
+                <ButtonComponent isPrimary="true" onClick={() => navigate('contacts')} cssClass="small-btn">Contacts</ButtonComponent>
+                <ButtonComponent isPrimary="true" onClick={() => navigate('about')} cssClass="small-btn">About</ButtonComponent>
             </div>
 
             {/* Right Section: Icons/Buttons */}

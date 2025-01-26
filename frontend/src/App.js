@@ -5,7 +5,10 @@ import LoginPage from "./components/LoginPage";
 import HomePage from "./pages/HomePage/HomePage";
 import { AuthProvider, useAuth } from "./authentication/AuthContext";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
-
+import ContactsPage from "./pages/ContactPage/ContactPage";
+import SmsPage from './pages/SmsPage/SmsPage';
+import WhatsupPage from './pages/WhatsupPage/WhatsupPage';
+import AboutPage from './pages/AboutPage/AboutPage';
 
 function App() {
     return (
@@ -19,7 +22,12 @@ function App() {
                                 <HomePage />
                             </RequireAuth>
                         }
-                    />
+                    >
+                        <Route path="contacts" element={<ContactsPage />} />
+                        <Route path="sms" element={<SmsPage />} />
+                        <Route path="whatsup" element={<WhatsupPage />} />
+                        <Route path="about" element={<AboutPage />} />
+                    </Route>
                 </Routes>
             </Router>
         </AuthProvider>

@@ -1,7 +1,7 @@
 import React from 'react';
 import { SplitterComponent, PanesDirective, PaneDirective } from '@syncfusion/ej2-react-layouts';
 import { useAuth } from "../../authentication/AuthContext";
-
+import { Outlet } from "react-router-dom";
 const HomePageContainer = () => {
     const { user } = useAuth();
 
@@ -11,10 +11,7 @@ const HomePageContainer = () => {
                 <PaneDirective
                     content={() => (
                         <div style={{ padding: '10px', textAlign: 'left' }}>
-
-                            <h2>Welcome to the Home Page </h2>
-                            <h3>{user.email}</h3>
-                            <p>Main content goes here!</p>
+                            <Outlet /> {/* Render child routes */}
                         </div>
                     )}
                 />
