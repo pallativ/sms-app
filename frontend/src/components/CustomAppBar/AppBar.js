@@ -1,11 +1,11 @@
 import React from 'react';
-import { AppBarComponent, MenuComponent, MenuItemModel } from '@syncfusion/ej2-react-navigations';
+import { AppBarComponent } from '@syncfusion/ej2-react-navigations';
 import { ButtonComponent } from '@syncfusion/ej2-react-buttons';
 import './AppBar.css';
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../authentication/AuthContext";
 const AppBar = () => {
-    const { user, logout } = useAuth();
+    const { logout } = useAuth();
     const navigate = useNavigate();
 
     const handleLogout = async () => {
