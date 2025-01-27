@@ -5,5 +5,6 @@ const router = express.Router();
 
 router.post('/send', smsController.sendSms);
 router.post('/queue', smsController.queueSms);
+router.get('/logs', smsController.readMessageLogs);
 
 module.exports = router;

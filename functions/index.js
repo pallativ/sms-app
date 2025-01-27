@@ -12,6 +12,7 @@ const logger = require("firebase-functions/logger");
 const express = require('express');
 const contactController = require('./src/controllers/contactController');
 const contactRoutes = require('./src/routes/contactRoutes');
+const smsRoutes = require('./src/routes/smsRoutes');
 const firebaseSetup = require('./firebaseSetup');
 const cors = require('cors');
 
@@ -33,5 +34,6 @@ app.get('/', (req, res) => {
 });
 
 app.use('/api/contacts', contactRoutes);
+app.use('/api/sms', smsRoutes);
 
 exports.backend_service = onRequest(app);

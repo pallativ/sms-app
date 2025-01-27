@@ -1,8 +1,9 @@
-const contactModel = require('../models/smsModel');
+const smsModel = require('../models/smsModel');
+const Joi = require('joi');
 
 exports.sendSms = async (smsRequest) => {
     try {
-        const result = await contactModel.sendSms(smsRequest);
+        const result = await smsModel.sendSms(smsRequest);
         return result;
     } catch (error) {
         throw new Error('Error sending SMS: ' + error);
@@ -11,9 +12,18 @@ exports.sendSms = async (smsRequest) => {
 
 exports.queueSms = async (smsRequest) => {
     try {
-        const result = await contactModel.queueSms(smsRequest);
+        const result = await smsModel.queueSms(smsRequest);
         return result;
     } catch (error) {
         throw new Error('Error queuing SMS: ' + error);
+    }
+}
+
+exports.readMessageLogs = async () => {
+    try {
+        const messages = await smsModel.readSmsLogs();
+        return messages;
+    } catch (error) {
+        throw new Error('Error reading message logs: ' + error);
     }
 }
