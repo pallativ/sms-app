@@ -1,5 +1,5 @@
 const smsService = require('../services/smsService');
-const { logger} = require('firebase-functions');
+const { logger } = require('firebase-functions');
 
 
 exports.sendSms = async (req, res) => {
@@ -24,17 +24,30 @@ exports.queueSms = async (req, res) => {
 
 exports.readMessageLogs = async (req, res) => {
     try {
-        const logs = await smsService.readMessageLogs();
+        const { startDate, endDate } = req.body;
+        const logs = await smsService.readMessageLogs(startDate, endDate);
         const filteredLogs = logs.map(log => ({
+            sid: log.sid,
             to: log.to,
             from: log.from,
             status: log.status,
             body: log.body,
             dateSent: log.dateSent,
             dateCreated: log.dateCreated,
-            price: log.price
+            price: log.price,
+            priceUnit: log.priceUnit,
         }));
         res.status(200).json({ success: true, filteredLogs });
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+};
+
+exports.importMessageLogs = async (req, res) => {
+    try {
+        const { startDate, endDate } = req.body;
+        const logs = await smsService.importMessageLogs(startDate, endDate);
+        res.status(200).json({ success: true, logs });
     } catch (error) {
         res.status(500).json({ success: false, error: error.message });
     }
