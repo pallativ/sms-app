@@ -10,7 +10,7 @@ const SmsPage = () => {
         const fetchMessageLogs = async () => {
             try {
                 const response = await axios.get('/api/sms/messageLogs');
-                setMessageLogs(response.data);
+                setMessageLogs(response.data.logs);
             } catch (error) {
                 console.error('Error fetching message logs:', error);
             }
