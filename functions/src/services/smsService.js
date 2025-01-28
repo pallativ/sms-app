@@ -49,3 +49,12 @@ exports.importMessageLogs = async (startDate, endDate) => {
         throw new Error('Error importing message logs: ' + error);
     }
 }
+
+exports.readMessageLogsFromDb = async () => {
+    try {
+        const messageLogs = await messageLogModel.readMessageLogs();
+        return messageLogs;
+    } catch (error) {
+        throw new Error('Error reading message logs from db: ' + error);
+    }
+}

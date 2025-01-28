@@ -16,3 +16,18 @@ exports.importMessageLogs = async function importMessageLogs(messageLogs) {
         throw new Error('Error importing message logs: ' + error);
     }
 }
+
+exports.readMessageLogs = async function readMessageLogs() {
+    try {
+        logger.debug('fetching message logs from messageLog collection.');
+        const snapshot = await db.collection('messageLog').get();
+        const messageLogs = [];
+        snapshot.forEach(doc => {
+            messageLogs.push({ id: doc.id, ...doc.data() });
+        });
+        return messageLogs;
+    } catch (error) {
+        logger.error('Error getting message logs: ', error);
+        throw new Error('Error getting message logs: ' + error);
+    }
+}

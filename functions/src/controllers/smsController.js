@@ -52,3 +52,12 @@ exports.importMessageLogs = async (req, res) => {
         res.status(500).json({ success: false, error: error.message });
     }
 };
+
+exports.readMessageLogsFromDb = async (req, res) => {
+    try {
+        const logs = await smsService.readMessageLogsFromDb();
+        res.status(200).json({ success: true, logs });
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+}
