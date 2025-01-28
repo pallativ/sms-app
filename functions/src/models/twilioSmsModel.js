@@ -43,9 +43,9 @@ exports.readMessageLogs = async (startDate, endDate) => {
             dateSentBefore: new Date(endDate),  // Messages sent before this date
         });
 
-        messages.forEach(message => {
-            logger.debug(`From: ${message.from}, To: ${message.to}, Body: ${message.body}, Status: ${message.status}`);
-        });
+        // messages.forEach(message => {
+        //     logger.debug(`From: ${message.from}, To: ${message.to}, Body: ${message.body}, Status: ${message.status}`);
+        // });
         return messages;
     } catch (error) {
         logger.error('Error reading SMS logs: ', error);
