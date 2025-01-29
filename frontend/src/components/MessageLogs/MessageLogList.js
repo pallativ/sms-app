@@ -47,7 +47,7 @@ const MessageLogList = ({ logs }) => {
                 allowPaging={true} // Enables pagination
                 toolbar={['Search']} // Adds a toolbar with search
                 pageSettings={{ pageSize: 10 }} // Configures pagination (5 items per page)
-                height={300}
+                height="100%"
             >
                 {/* Define columns */}
                 <ColumnsDirective>
