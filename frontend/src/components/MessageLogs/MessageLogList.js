@@ -8,7 +8,7 @@ const MessageLogList = ({ logs }) => {
     useEffect(() => {
         console.log('MessageLogList:', logs);
         setMessageLogs(logs);
-    });
+    },[logs]);
     return (
         <div>
             <h2>Message Logs</h2>
