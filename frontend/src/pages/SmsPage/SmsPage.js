@@ -2,9 +2,12 @@ import React from 'react';
 import MessageLogList from '../../components/MessageLogs/MessageLogList';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { Outlet } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
 const SmsPage = () => {
     const [messageLogs, setMessageLogs] = useState([]);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchMessageLogs = async () => {
@@ -22,8 +25,8 @@ const SmsPage = () => {
     return (
         <div>
             <h1>SMS Page</h1>
-            <p>Welcome to the SMS Page. Here you can manage your SMS messages.</p>
-            <MessageLogList logs={messageLogs} />
+            <button onClick={() =>  navigate('/home/sms/messageLogs')}>Go to Message Log</button>
+            <Outlet />
         </div>
     );
 };
