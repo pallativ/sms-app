@@ -3,6 +3,8 @@ const Joi = require('joi');
 
 // Define a validation schema using Joi
 const contactSchema = Joi.object({
+    ownerEmail: Joi.string().email().required().messages(),
+    ownerUserId: Joi.string().required().messages(),
     firstName: Joi.string().min(3).max(30).required().messages({
         'string.base': 'First Name must be a string',
         'string.min': 'First Name must be at least 3 characters long',

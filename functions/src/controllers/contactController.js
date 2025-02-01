@@ -2,7 +2,9 @@ const contactService = require('../services/contactService');
 
 exports.createContact = async (req, res) => {
     try {
-        const contactId = await contactService.createContact(req.body);
+        var userId = req.user.uid;
+        console.log('user details: ', req.user);
+        const contactId = await contactService.createContact({ ...req.body, ownerUserId: userId, ownerEmail: req.user.email });
         res.status(201).json({ message: 'Contact created successfully.', id: contactId });
     } catch (error) {
         res.status(500).json({ error: error });
