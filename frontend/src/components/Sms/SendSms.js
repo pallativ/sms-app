@@ -54,7 +54,7 @@ const SendSms = () => {
                         name="from"
                         // value={from}
                         input={(e) => handleTextChange(e, "from")}
-                        style={{ width: '100%' }}
+                        style={{ width: '100%', fontSize: '13px', fontFamily: "Roboto, sans-serif" }}
                     />
                 </div>
                 <div style={{ marginTop: '20px' }}>
@@ -63,7 +63,7 @@ const SendSms = () => {
                         name="to"
                         // value={to}
                         input={(e) => handleTextChange(e, "to")}
-                        style={{ width: '100%' }}
+                        style={{ width: '100%', fontSize: '13px', fontFamily: "Roboto, sans-serif" }}
                     />
                 </div>
                 <div style={{ marginTop: '20px' }}>
@@ -74,8 +74,8 @@ const SendSms = () => {
                         input={(e) => handleTextChange(e, "message")}
                         multiline={true}
                         maxLength={160}
-                        rows={6}
-                        style={{ width: '300px' }}
+                        // rows={6}
+                        style={{ width: '300px', fontSize: '13px', fontFamily: "Roboto, sans-serif" }}
                     />
                     <p style={{ marginTop: "10px", fontSize: "12px", color: "#aaa" }}>
                         Character Count: {charCount}

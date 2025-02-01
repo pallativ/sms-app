@@ -15,6 +15,7 @@ const contactRoutes = require('./src/routes/contactRoutes');
 const smsRoutes = require('./src/routes/smsRoutes');
 const firebaseSetup = require('./firebaseSetup');
 const cors = require('cors');
+const bodyParser = require("body-parser");
 
 
 // Create and deploy your first functions
@@ -28,6 +29,7 @@ const app = express();
 app.use(express.json());
 // Enable CORS for cross-origin requests
 app.use(cors());
+app.use(bodyParser.json());
 
 app.get('/', (req, res) => {
     res.send('Hello from communication backend service!');
