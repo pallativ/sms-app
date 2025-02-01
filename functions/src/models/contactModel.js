@@ -1,10 +1,10 @@
 const { db } = require('../../firebaseSetup');
 const { logger } = require('firebase-functions');
 
-exports.getAllContacts = async function getAllContacts() {
+exports.getAllContacts = async function getAllContacts(userEmail) {
     try {
         logger.debug('fetching contacts from contacts collection.');
-        const snapshot = await db.collection('contacts').get();
+        const snapshot = await db.collection('users').doc(userEmail).collection('contacts').get();
         const contacts = [];
         snapshot.forEach(doc => {
             contacts.push({ id: doc.id, ...doc.data() });
@@ -16,15 +16,22 @@ exports.getAllContacts = async function getAllContacts() {
     }
 }
 
-exports.isExists = async function isExists(email) {
-    const doc = await db.collection("contacts").doc(email).get();
+exports.isExists = async function isExists(userEmail, contactEmail) {
+    const doc = await db.collection("users").doc(userEmail).collection("contacts").doc(contactEmail).get();
     return doc.exists;
 }
 
 
-exports.createContact = async function createContact(contact) {
+exports.createContact = async function createContact(owner, contact) {
     try {
-        const docRef = db.collection("contacts").doc(contact.email);
+
+        var userDocRef = db.collection('users').doc(owner.email);
+        await userDocRef.set({
+            userId: owner.userId,
+            email: owner.email
+        });
+
+        const docRef = userDocRef.collection("contacts").doc(contact.email);
         var createdAt = new Date();
         await docRef.set({ ...contact, createdAt: createdAt, updatedAt: createdAt });
         //const res = await db.collection('contacts').add(contact);
