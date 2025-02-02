@@ -1,6 +1,7 @@
 const twilioSmsModel = require('../models/twilioSmsModel');
 const Joi = require('joi');
 const messageLogModel = require('../models/messageLogModel');
+const messageQueueModel = require('../models/messageQueueModel');
 
 exports.sendSms = async (userEmail, smsRequest) => {
     try {
@@ -13,7 +14,7 @@ exports.sendSms = async (userEmail, smsRequest) => {
 
 exports.queueSms = async (userEmail, smsRequest) => {
     try {
-        const result = await twilioSmsModel.queueSms(smsRequest);
+        const result = await messageQueueModel.queueMessage(userEmail, smsRequest);
         return result;
     } catch (error) {
         throw new Error('Error queuing SMS: ' + error);
