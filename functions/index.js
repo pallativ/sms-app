@@ -16,7 +16,7 @@ const smsRoutes = require('./src/routes/smsRoutes');
 const firebaseSetup = require('./firebaseSetup');
 const cors = require('cors');
 const bodyParser = require("body-parser");
-
+const { firestoreTriggers } = require("./src/triggers/fireStoreTriggers");
 
 // Create and deploy your first functions
 // https://firebase.google.com/docs/functions/get-started
@@ -38,4 +38,9 @@ app.get('/', (req, res) => {
 app.use('/api/contacts', contactRoutes);
 app.use('/api/sms', smsRoutes);
 
+
 exports.backend_service = onRequest(app);
+// Deploy Firestore Triggers
+exports.onNewDocument = firestoreTriggers.onNewDocument;
+
+

@@ -13,4 +13,4 @@ const db = admin.firestore();
 const auth = admin.auth();
 logger.info('Database Id:', db.databaseId);
 
-module.exports = { db, auth };
+module.exports = { db, auth, };
