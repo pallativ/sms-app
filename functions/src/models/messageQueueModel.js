@@ -4,7 +4,8 @@ const { logger } = require('firebase-functions');
 const queueMessage = async (userMail, message) => {
     try {
         console.log('Adding message to queue', message  );
-        const docRef = await db.collection('messageQueue').add({ userEmail: userMail, ...message });
+        var currentDate = new Date();
+        const docRef = await db.collection('messageQueue').add({ userEmail: userMail, ...message, createdAt: currentDate, updatedAt: currentDate });
         logger.info('Message added to queue with ID: ', docRef.id);
         return docRef.id;
     } catch (error) {

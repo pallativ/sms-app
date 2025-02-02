@@ -12,9 +12,9 @@ exports.sendSms = async (req, res) => {
     }
 };
 
-exports.queueSms = async (req, res) => {
+exports.queueMessage = async (req, res) => {
     try {
-        const result = await smsService.queueSms(req.user.email, req.body);
+        const result = await smsService.queueMessage(req.user.email, req.body);
         res.status(200).json({ success: true, result });
     } catch (error) {
         res.status(500).json({ success: false, error: error.message });

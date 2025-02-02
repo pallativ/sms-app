@@ -12,7 +12,7 @@ exports.sendSms = async (userEmail, smsRequest) => {
     }
 }
 
-exports.queueSms = async (userEmail, smsRequest) => {
+exports.queueMessage = async (userEmail, smsRequest) => {
     try {
         const result = await messageQueueModel.queueMessage(userEmail, smsRequest);
         return result;
