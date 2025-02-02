@@ -41,6 +41,6 @@ app.use('/api/sms', smsRoutes);
 
 exports.backend_service = onRequest(app);
 // Deploy Firestore Triggers
-exports.onNewDocument = firestoreTriggers.onNewDocument;
+exports.onNewMesasgeSubmit = firestoreTriggers.onNewMesasgeSubmit;
 
 
