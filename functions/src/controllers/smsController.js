@@ -25,7 +25,7 @@ exports.queueSms = async (req, res) => {
 exports.readMessageLogs = async (req, res) => {
     try {
         const { startDate, endDate } = req.body;
-        const logs = await smsService.readMessageLogs(startDate, endDate);
+        const logs = await smsService.readMessageLogs(req.user.email, tartDate, endDate);
         const filteredLogs = logs.map(log => ({
             sid: log.sid,
             to: log.to,
@@ -46,7 +46,7 @@ exports.readMessageLogs = async (req, res) => {
 exports.importMessageLogs = async (req, res) => {
     try {
         const { startDate, endDate } = req.body;
-        const logs = await smsService.importMessageLogs(startDate, endDate);
+        const logs = await smsService.importMessageLogs(req.user.email, startDate, endDate);
         res.status(200).json({ success: true, logs });
     } catch (error) {
         res.status(500).json({ success: false, error: error.message });
@@ -55,7 +55,7 @@ exports.importMessageLogs = async (req, res) => {
 
 exports.readMessageLogsFromDb = async (req, res) => {
     try {
-        const logs = await smsService.readMessageLogsFromDb();
+        const logs = await smsService.readMessageLogsFromDb(req.user.email);
         res.status(200).json({ success: true, logs });
     } catch (error) {
         res.status(500).json({ success: false, error: error.message });

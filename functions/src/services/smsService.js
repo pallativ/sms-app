@@ -2,7 +2,7 @@ const twilioSmsModel = require('../models/twilioSmsModel');
 const Joi = require('joi');
 const messageLogModel = require('../models/messageLogModel');
 
-exports.sendSms = async (smsRequest) => {
+exports.sendSms = async (userEmail, smsRequest) => {
     try {
         const result = await twilioSmsModel.sendSms(smsRequest);
         return result;
@@ -11,7 +11,7 @@ exports.sendSms = async (smsRequest) => {
     }
 }
 
-exports.queueSms = async (smsRequest) => {
+exports.queueSms = async (userEmail, smsRequest) => {
     try {
         const result = await twilioSmsModel.queueSms(smsRequest);
         return result;
@@ -20,7 +20,7 @@ exports.queueSms = async (smsRequest) => {
     }
 }
 
-exports.readMessageLogs = async (startDate, endDate) => {
+exports.readMessageLogs = async (userEmail, startDate, endDate) => {
     try {
         const messages = await twilioSmsModel.readMessageLogs(startDate, endDate);
         return messages;
@@ -29,10 +29,12 @@ exports.readMessageLogs = async (startDate, endDate) => {
     }
 }
 
-exports.importMessageLogs = async (startDate, endDate) => {
+exports.importMessageLogs = async (userEmail, startDate, endDate) => {
     try {
-        const messages = await this.readMessageLogs(startDate, endDate);
+        console.log(`Importing message logs${startDate} to ${endDate}`);
+        const messages = await this.readMessageLogs(userEmail, startDate, endDate);
         const requiredMessages = messages.map(log => ({
+            userEmail: userEmail,
             sid: log.sid,
             to: log.to,
             from: log.from,
@@ -50,9 +52,9 @@ exports.importMessageLogs = async (startDate, endDate) => {
     }
 }
 
-exports.readMessageLogsFromDb = async () => {
+exports.readMessageLogsFromDb = async (userEmail) => {
     try {
-        const messageLogs = await messageLogModel.readMessageLogs();
+        const messageLogs = await messageLogModel.readMessageLogs(userEmail);
         return messageLogs;
     } catch (error) {
         throw new Error('Error reading message logs from db: ' + error);

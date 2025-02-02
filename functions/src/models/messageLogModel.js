@@ -17,7 +17,7 @@ exports.importMessageLogs = async function importMessageLogs(messageLogs) {
     }
 }
 
-exports.readMessageLogs = async function readMessageLogs() {
+exports.readMessageLogs = async function readMessageLogs(userEmail) {
     try {
         logger.debug('fetching message logs from messageLog collection.');
         const snapshot = await db.collection('messageLog').get();
