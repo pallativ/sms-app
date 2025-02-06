@@ -1,6 +1,7 @@
 import React from "react";
 import '../../styles/syncfusion'
 import CreateContact from "../../components/Contacts/AddContact";
+import ContactCardView from "../../components/Contacts/ContactCardView";
 
 const ContactsPage = () => {
     return (
@@ -9,6 +10,7 @@ const ContactsPage = () => {
             <p>Welcome to the Contacts Page.</p>
             <div style={{ width: 400}}>
             <CreateContact />
+            <ContactCardView contact={{ name: "John Doe", position: "Software Developer", email: "pkondalu@gmail.com", phone: "123-456-7890" }} />
             </div>
         </React.Fragment>
     );
