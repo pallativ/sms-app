@@ -24,6 +24,27 @@ exports.sendSms = async (sendSmsModel) => {
     }
 }
 
+exports.sendWhatsapp = async (sendWhatsappModel) => {
+    try {
+        logger.debug('Sending WhatsApp');
+        const client = new twilio(twilioAccountId, twilioAuthToken);
+        const message = await client.messages.create({
+            body: "Hello from Twilio WhatsApp API! ",
+            to: "whatsapp:+919000180459",
+            // contentSid: 'HXb5b62575e6e4ff6129ad7c8efe1f983e',
+            // contentVariables: '{"1":"12/1","2":"3pm"}',
+            from: "whatsapp:+14155238886"
+        });
+
+        logger.debug('WhatsApp sent successfully and status: ', message);
+        logger.debug('WhatsApp sent successfully: ', message.sid);
+        return true;
+    } catch (error) {
+        logger.error('Error sending WhatsApp: ', error);
+        throw new Error('Error sending WhatsApp: ' + error);
+    }
+};
+
 exports.queueSms = async () => {
     try {
         logger.debug('Queuing SMS');

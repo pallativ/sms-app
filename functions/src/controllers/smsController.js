@@ -12,6 +12,7 @@ exports.sendSms = async (req, res) => {
     }
 };
 
+
 exports.queueMessage = async (req, res) => {
     try {
         const result = await smsService.queueMessage(req.user.email, req.body);

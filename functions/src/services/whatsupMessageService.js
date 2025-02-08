@@ -4,6 +4,8 @@ const WHATSAPP_API_URL = "https://graph.facebook.com/v19.0";
 const PHONE_NUMBER_ID = process.env.WHATSAPP_PHONE_NUMBER_ID;
 const ACCESS_TOKEN = process.env.WHATSAPP_ACCESS_TOKEN;
 const { logger } = require('firebase-functions');
+const twilioSmsModel = require('../models/twilioSmsModel');
+
 /**
  * Send a WhatsApp message using a template
  * @param {string} recipientPhone - The recipient's phone number (E.164 format: +1234567890)
@@ -12,7 +14,17 @@ const { logger } = require('firebase-functions');
  * @returns {Promise}
  */
 
-async function sendWhatsAppTemplate(recipientPhone, templateName, templateParams) {
+exports.sendWhatsupMessage = async (req, res) => {
+    try {
+        logger.info('Sending WhatsApp inside controller');
+        const result = await twilioSmsModel.sendWhatsapp(req.body);
+        return result;
+    } catch (error) {
+        throw new Error('Error sending WhatsApp: ' + error);
+    }
+};
+
+exports.sendWhatsAppTemplate = async (recipientPhone, templateName, templateParams) => {
     try {
         const response = await axios.post(
             `${WHATSAPP_API_URL}/${PHONE_NUMBER_ID}/messages`,
@@ -50,4 +62,4 @@ async function sendWhatsAppTemplate(recipientPhone, templateName, templateParams
     }
 }
 
-module.exports = { sendWhatsAppTemplate };
+
