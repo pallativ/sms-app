@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
     GridComponent,
     ColumnsDirective,
@@ -10,31 +10,12 @@ import {
     Edit,
 } from "@syncfusion/ej2-react-grids";
 
-const ContactList = () => {
+const ContactList = ({ contacts }) => {
     const filterSettings = { type: "Excel" };
-    const [data, setData] = useState([
-        {
-            firstName: "John",
-            email: "john@example.com",
-            phoneNumber: "1234567890",
-        },
-        {
-            firstName: "Jane",
-            email: "jane@example.com",
-            phoneNumber: "9876543210",
-        },
-        {
-            firstName: "Mike",
-            email: "mike@example.com",
-            phoneNumber: "4567891230",
-        },
-        {
-            firstName: "Emma",
-            email: "emma@example.com",
-            phoneNumber: "7891234560",
-        },
-    ]);
-
+    const [data, setData] = useState([]);
+    useEffect(() => {
+        setData(contacts);
+    }, [contacts]);
     const handleActionBegin = (args) => {
         if (args.requestType === "save") {
             const newData = args.data;
@@ -94,6 +75,7 @@ const ContactList = () => {
             <span>{props.email}</span>
         </div>
     );
+    console.log(contacts, data);
 
     return (
         <div className="control-section">
