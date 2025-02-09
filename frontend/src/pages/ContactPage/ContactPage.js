@@ -1,7 +1,8 @@
 import React from "react";
-import '../../styles/syncfusion'
-import CreateContact from "../../components/Contacts/AddContact";
+import "../../styles/syncfusion";
+import CreateContact from "../../components/Contacts/CreateContact";
 import ContactCardView from "../../components/Contacts/ContactCardView";
+import ContactList from "../../components/Contacts/ContactList";
 
 const ContactsPage = () => {
     return (
