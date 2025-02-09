@@ -1,5 +1,4 @@
-import React from 'react';
-import MessageLogList from '../../components/MessageLogs/MessageLogList';
+import React from "react";
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Outlet } from 'react-router-dom';
