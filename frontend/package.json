@@ -12,6 +12,7 @@
         "@syncfusion/ej2-react-layouts": "^28.1.33",
         "@syncfusion/ej2-react-multicolumn-combobox": "^28.2.3",
         "@syncfusion/ej2-react-navigations": "^28.1.41",
+        "@syncfusion/ej2-react-richtexteditor": "^28.2.4",
         "axios": "^1.7.9",
         "cra-template": "1.2.0",
         "firebase": "^11.2.0",

@@ -1,6 +1,4 @@
 import React from "react";
-import SelectContact from "../../components/Contacts/SelectContact";
-import MessageLogList from '../../components/MessageLogs/MessageLogList';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Outlet } from 'react-router-dom';
