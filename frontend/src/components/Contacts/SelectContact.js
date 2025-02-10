@@ -69,10 +69,10 @@ const members = [
     },
 ];
 
-const Default = () => {
+const SelectContact = ({ setSelectedPhone }) => {
     const [value, setValue] = useState(null);
     const [text, setText] = useState(""); // Store the first name and phone number
-    const fields = { text: "displayText", value: "id" };
+    const fields = { text: "displayText", value: "phone" };
 
     // Add a new field "displayText" combining firstName and phone
     const dataSource = members.map((member) => ({
@@ -83,6 +83,7 @@ const Default = () => {
     const valueChange = (args) => {
         setValue(args.itemData?.id || null);
         setText(args.itemData?.displayText || "");
+        setSelectedPhone(args.itemData?.value); // Ensure phone is updated
     };
 
     return (
@@ -112,11 +113,6 @@ const Default = () => {
                                     header="First Name"
                                     width={110}
                                 ></ColumnDirective>
-                                {/* <ColumnDirective
-                                    field="email"
-                                    header="Email"
-                                    width={200}
-                                ></ColumnDirective> */}
                                 <ColumnDirective
                                     field="phone"
                                     header="Phone"
@@ -131,4 +127,4 @@ const Default = () => {
     );
 };
 
-export default Default;
+export default SelectContact;
