@@ -5,7 +5,7 @@ import { Outlet } from 'react-router-dom';
 import { useNavigate } from "react-router-dom";
 import './SmsPage.css';
 const SmsPage = () => {
-    const [messageLogs, setMessageLogs] = useState([]);
+    const [ setMessageLogs] = useState([]);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -19,7 +19,7 @@ const SmsPage = () => {
         };
 
         fetchMessageLogs();
-    }, []);
+    }, [setMessageLogs]);
 
     return (
         <div>

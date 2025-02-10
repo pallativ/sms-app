@@ -2,37 +2,34 @@ import React from "react";
 import "../../styles/syncfusion";
 import ContactList from "../../components/Contacts/ContactList";
 import { useEffect, useState } from 'react';
-import axios from 'axios';
 import { useAuth } from "../../authentication/AuthContext";
+import { getAllContacts } from "../../ApiServices/ContactApiService";
+
 
 const ContactsPage = () => {
     const [contacts, setContacts] = useState([]);
-    const { login, user } = useAuth();
+    const { user } = useAuth();
 
     useEffect(() => {
-        const fetchMessageLogs = async () => {
+        const fetchContacts = async () => {
             try {
-                const response = await axios.get('/api/contacts', {
-                    headers: {
-                        Authorization: `Bearer ${user.accessToken}`
-                    }
-                });
-
-                setContacts(response.data);
+                const data = await getAllContacts(user);
+                setContacts(data);
             } catch (error) {
-                console.error('Error fetching message logs:', error);
+                console.error('Error fetching contacts:', error);
             }
         };
-
-        fetchMessageLogs();
-    }, []);
+        if (user) {
+            fetchContacts();
+        }
+    }, [user]);
 
 
     return (
         <React.Fragment>
             <h1>Contacts</h1>
             <p>Welcome to the Contacts Page.</p>
-            <ContactList contacts={contacts} />
+            {contacts.length > 0 && <ContactList contacts={contacts} />}
         </React.Fragment>
     );
 };

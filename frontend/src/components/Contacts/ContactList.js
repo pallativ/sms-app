@@ -9,13 +9,19 @@ import {
     Toolbar,
     Edit,
 } from "@syncfusion/ej2-react-grids";
+import { createContact } from "../../ApiServices/ContactApiService";
+import { useAuth } from "../../authentication/AuthContext";
 
 const ContactList = ({ contacts }) => {
     const filterSettings = { type: "Excel" };
     const [data, setData] = useState([]);
+    const { user } = useAuth();
+
     useEffect(() => {
         setData(contacts);
+        console.log('Contacts List from contact List component:', contacts);
     }, [contacts]);
+
     const handleActionBegin = (args) => {
         if (args.requestType === "save") {
             const newData = args.data;
@@ -30,6 +36,7 @@ const ContactList = ({ contacts }) => {
             } else {
                 if (args.action === "add") {
                     setData((prevData) => [...prevData, newData]);
+                    createContact(user, newData);
                 } else if (args.action === "edit") {
                     setData((prevData) =>
                         prevData.map((row) =>
@@ -75,7 +82,7 @@ const ContactList = ({ contacts }) => {
             <span>{props.email}</span>
         </div>
     );
-    console.log(contacts, data);
+
 
     return (
         <div className="control-section">
@@ -95,6 +102,12 @@ const ContactList = ({ contacts }) => {
                 actionBegin={handleActionBegin}
             >
                 <ColumnsDirective>
+                    <ColumnDirective
+                        field="id"
+                        headerText="ID"
+                        isPrimaryKey={true}
+                        visible={false}
+                    />
                     <ColumnDirective
                         field="firstName"
                         headerText="First Name"
