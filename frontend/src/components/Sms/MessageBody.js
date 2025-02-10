@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import {
     HtmlEditor,
     Image,
@@ -9,27 +9,18 @@ import {
     Toolbar,
     EmojiPicker,
 } from "@syncfusion/ej2-react-richtexteditor";
-import { ButtonComponent } from "@syncfusion/ej2-react-buttons";
 
-const MessageBody = ({ selectedPhone }) => {
+
+const MessageBody = ({ selectedPhone, onMessageChange }) => {
     const rteRef = useRef(null);
+    const [editorContent, setEditorContent] = useState('');
 
-    const handleSend = () => {
-        if (rteRef.current) {
-            const message = rteRef.current.getText().trim(); // Get text without HTML tags
-            if (!selectedPhone) {
-                alert("⚠️ Please select a contact first!");
-                return;
-            }
-            if (!message) {
-                alert("⚠️ Please type a message!");
-                return;
-            }
-            alert(
-                `Messae sent succesfully✅\n📞contact: ${selectedPhone}\n💬Message: ${message}`
-            );
-        }
+    const handleEditorChange = (args) => {
+        setEditorContent(args.value);
+        console.log('Editor content changed:', args);
+        onMessageChange(rteRef.current.getText());
     };
+
 
     const toolbarSettings = {
         items: [
@@ -75,6 +66,7 @@ const MessageBody = ({ selectedPhone }) => {
                     height={250}
                     toolbarSettings={toolbarSettings}
                     ref={rteRef}
+                    change={handleEditorChange}
                 >
                     <Inject
                         services={[
@@ -88,14 +80,7 @@ const MessageBody = ({ selectedPhone }) => {
                     />
                 </RichTextEditorComponent>
             </div>
-            <ButtonComponent
-                type="button"
-                cssClass="e-primary"
-                style={{ margin: "10px" }}
-                onClick={handleSend}
-            >
-                Send
-            </ButtonComponent>
+            <pre>{editorContent}</pre>
         </>
     );
 };
