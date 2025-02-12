@@ -97,3 +97,31 @@ exports.deleteContact = async function deleteContact(userEmail, contactId) {
     }
 }
 
+
+/// Get tags for a user
+exports.getTags = async function getTags(userEmail) {
+    try {
+        const snapshot = await db.collection('users').doc(userEmail).collection('tags').get();
+        const tags = [];
+        snapshot.forEach(doc => {
+            tags.push(doc.data().tag);
+        });
+        return tags;
+    } catch (error) {
+        throw new Error('Error getting tags: ' + error.message);
+    }
+}
+
+// Get custom fields from user
+exports.getCustomFields = async function getCustomFields(userEmail) {
+    try {
+        const snapshot = await db.collection('users').doc(userEmail).collection('customContactFields').get();
+        const customFields = [];
+        snapshot.forEach(doc => {
+            customFields.push(doc.data());
+        });
+        return customFields;
+    } catch (error) {
+        throw new Error('Error getting custom fields: ' + error.message);
+    }
+}
