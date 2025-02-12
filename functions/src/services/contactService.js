@@ -23,6 +23,17 @@ const contactSchema = Joi.object({
         'string.min': 'Phone number must be at least 10',
         'any.required': 'Phone number is required',
     }),
+    tags: Joi.array().items(Joi.string()).default([]),
+    // Dynamic customFields validation
+    customFields: Joi.object().pattern(
+        Joi.string(),  // Any key is allowed
+        Joi.alternatives().try(
+            Joi.string(),     // Can be a string
+            Joi.number(),     // Can be a number
+            Joi.boolean(),    // Can be a boolean
+            Joi.date().iso()  // Can be a valid ISO date string
+        )
+    ).default({})
 });
 
 

@@ -33,6 +33,27 @@ exports.createContact = async function createContact(owner, contact) {
             email: owner.email
         });
 
+
+        // Storing the tags.
+        var tags = contact.tags;
+        if (tags !== null) {
+            tags.forEach(async tag => {
+                await userDocRef.collection('tags').doc(tag).set({ tag: tag });
+            });
+        }
+
+        // Storing Custom Fields.
+        // Extract key names and their types
+        if (contact.customFields !== null) {
+            const customFields = [];
+            for (const key in contact.customFields) {
+                customFields.push({ name: key, type: typeof contact.customFields[key] })
+            }
+            customFields.forEach(async field => {
+                await userDocRef.collection('customContactFields').doc(field.name).set({ ...field });
+            });
+        }
+
         const docRef = userDocRef.collection("contacts").doc(contact.email);
         var createdAt = new Date();
         await docRef.set({ ...contact, createdAt: createdAt, updatedAt: createdAt });

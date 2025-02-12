@@ -89,7 +89,7 @@ const ContactList = ({ contacts }) => {
             <GridComponent
                 dataSource={data}
                 height="200"
-                width={"750px"}
+                width={"100%"}
                 allowSorting={true}
                 allowFiltering={true}
                 filterSettings={filterSettings}

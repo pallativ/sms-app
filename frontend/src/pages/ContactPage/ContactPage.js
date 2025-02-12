@@ -29,7 +29,7 @@ const ContactsPage = () => {
         <React.Fragment>
             <h1>Contacts</h1>
             <p>Welcome to the Contacts Page.</p>
-            {contacts.length > 0 && <ContactList contacts={contacts} />}
+            { <ContactList contacts={contacts} />}
         </React.Fragment>
     );
 };
