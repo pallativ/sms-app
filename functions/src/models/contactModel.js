@@ -50,7 +50,7 @@ exports.createContact = async function createContact(owner, contact) {
                 customFields.push({ name: key, type: typeof contact.customFields[key] })
             }
             customFields.forEach(async field => {
-                await userDocRef.collection('customContactFields').doc(field.name).set({ ...field });
+                await userDocRef.collection('customFields').doc(field.name).set({ ...field });
             });
         }
 
@@ -115,7 +115,7 @@ exports.getTags = async function getTags(userEmail) {
 // Get custom fields from user
 exports.getCustomFields = async function getCustomFields(userEmail) {
     try {
-        const snapshot = await db.collection('users').doc(userEmail).collection('customContactFields').get();
+        const snapshot = await db.collection('users').doc(userEmail).collection('customFields').get();
         const customFields = [];
         snapshot.forEach(doc => {
             customFields.push(doc.data());
