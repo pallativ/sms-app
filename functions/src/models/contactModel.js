@@ -30,7 +30,7 @@ exports.createContact = async function createContact(owner, contact) {
         var userDocRef = db.collection('users').doc(owner.email);
         await userDocRef.set({
             userId: owner.userId,
-            email: owner.email
+            email: owner.email,
         });
 
 
