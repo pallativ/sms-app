@@ -1,6 +1,6 @@
 const smsController = require('../controllers/smsController');
 const express = require('express');
-const { verifyToken } = require('../middleware/VerifyToken');
+const { verifyToken } = require('../middleware/VerifyTokenMiddleware');
 
 const router = express.Router();
 

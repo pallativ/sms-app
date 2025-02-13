@@ -14,6 +14,7 @@ const contactController = require('./src/controllers/contactController');
 const contactRoutes = require('./src/routes/contactRoutes');
 const smsRoutes = require('./src/routes/smsRoutes');
 const whatsupRoutes = require('./src/routes/whatsupRoutes');
+const TenantRoutes = require('./src/routes/TenantRoutes');
 const firebaseSetup = require('./firebaseSetup');
 const cors = require('cors');
 const bodyParser = require("body-parser");
@@ -39,6 +40,7 @@ app.get('/', (req, res) => {
 app.use('/api/contacts', contactRoutes);
 app.use('/api/sms', smsRoutes);
 app.use('/api/whatsup', whatsupRoutes);
+app.use('/api/tenant', TenantRoutes);
 
 
 exports.backend_service = onRequest(app);
