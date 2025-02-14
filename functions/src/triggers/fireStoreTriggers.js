@@ -1,6 +1,6 @@
 const { onDocumentCreated } = require("firebase-functions/v2/firestore");
 const firebaseSetup = require('../../firebaseSetup');
-console.log("Registering new document trigger");
+// console.log("Registering new document trigger");
 
 const onNewSmsSubmit = onDocumentCreated("messageQueue/{docId}", async (event) => {
     console.log("--------------------New Document Triggered------------------------------------------");
@@ -18,5 +18,5 @@ const onNewWhatsupMessageSubmit = onDocumentCreated("whatsUpMessageQueue/{docId}
     console.log("New whats up document sent to queue:", newData);
 })
 
-console.log("Completing new document trigger");
+// console.log("Completing new document trigger");
 module.exports = { firestoreTriggers: { onNewSmsSubmit, onNewWhatsupMessageSubmit } };

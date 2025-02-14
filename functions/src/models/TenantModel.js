@@ -2,7 +2,7 @@ const admin = require("firebase-admin");
 const db = admin.firestore();
 const { logger } = require('firebase-functions');
 
-exports.createTenant = async ({ code, name, adminUserEmail }) => {
+exports.createTenant = async ({ code, name, adminEmail }) => {
     try {
         const tenantRef = await db.collection("tenants").doc(code);
         if (await this.checkTenantExists(code)) {
@@ -12,19 +12,20 @@ exports.createTenant = async ({ code, name, adminUserEmail }) => {
             code,
             name,
             createdAt: new Date(),
-            adminUserEmail,
-            users: [adminUserEmail], // Owner is the first user
+            adminEmail,
+            users: [adminEmail], // Owner is the first user
         });
         return tenantRef.id; // Return the new tenant's ID
     } catch (error) {
         logger.error("Error", error);
+        throw new Error("Error in creating the tenant");
     }
 }
 
 exports.checkTenantExists = async (code) => {
     const tenantsRef = await db.collection("tenants").doc(code).get();
     if (tenantsRef.exists) {
-        logger.info(`❌ Tenant with name "${code}" does not exist.`);
+        logger.info(`Tenant with name "${code}" does not exist.`);
         return true;
     }
     return false;
