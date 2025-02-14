@@ -4,7 +4,7 @@ import ContactList from "../../components/Contacts/ContactList";
 import { useEffect, useState } from 'react';
 import { useAuth } from "../../authentication/AuthContext";
 import { getAllContacts } from "../../ApiServices/ContactApiService";
-
+import GenericForm from "../../components/Library/GenericForm"
 
 const ContactsPage = () => {
     const [contacts, setContacts] = useState([]);
@@ -24,12 +24,28 @@ const ContactsPage = () => {
         }
     }, [user]);
 
+    const formFields = [
+        { name: "firstName", label: "First Name", type: "text", placeholder: "Enter first name" },
+        { name: "lastName", label: "Last Name", type: "text", placeholder: "Enter last name" },
+        { name: "DOB", label: "DOB", type: "date", placeholder: "Enter DOB" },
+        { name: "gender", label: "Gender", type: "dropdown", placeholder: "Select Gender", options: ["Male", "Female", "Other"] }
+    ];
+
+    const handleSubmit = (data) => {
+        console.log("Form Data:", data);
+    };
 
     return (
         <React.Fragment>
             <h1>Contacts</h1>
             <p>Welcome to the Contacts Page.</p>
-            { <ContactList contacts={contacts} />}
+            {<ContactList contacts={contacts} />}
+
+            <div className="p-8" style={{ width: "400px" }}>
+                <h2 className="text-xl font-bold mb-4">Dynamic Form with Syncfusion</h2>
+                <GenericForm formFields={formFields} onSubmit={handleSubmit} />
+            </div>
+
         </React.Fragment>
     );
 };
