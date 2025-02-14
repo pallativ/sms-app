@@ -31,30 +31,12 @@ exports.checkTenantExists = async (code) => {
 }
 
 exports.assignUserToTenant = async (tenantCode, uid, email) => {
-    const userRef = await db.collection("tenants").doc(tenantCode).collection("users").doc(uid);
+    const userRef = await db.collection("tenants").doc(tenantCode).collection("users").doc(email);
     const result = await userRef.set({
         uid,
         email
     });
     logger.info("Assigned user to tenant", { uid, email })
-}
-
-
-exports.addUserToTenant = async (tenantCode, userId, email, displayName, role) => {
-    const userRef = db.collection(tenants).get(tenantCode).collection("users").doc(userId);
-    await userRef.set({
-        tenantId,
-        email,
-        displayName,
-        role,
-        createdAt: admin.firestore.FieldValue.serverTimestamp(),
-    });
-
-    await db.collection("tenants").doc(tenantId).update({
-        users: admin.firestore.FieldValue.arrayUnion(userId),
-    });
-
-    console.log(`User ${displayName} (${email}) added to Tenant ${tenantId} with Role: ${role}`);
 }
 
 exports.getTenantByUserEmail = async (email) => {
