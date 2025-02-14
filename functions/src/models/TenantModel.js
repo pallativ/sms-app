@@ -2,14 +2,12 @@ const admin = require("firebase-admin");
 const db = admin.firestore();
 const { logger } = require('firebase-functions');
 
-exports.createTenant = async (code, name, adminUserEmail) => {
+exports.createTenant = async ({ code, name, adminUserEmail }) => {
     try {
-        logger.info("Tenant creating:" + name);
         const tenantRef = await db.collection("tenants").doc(code);
-        if (!await this.checkTenantExists(code)) {
+        if (await this.checkTenantExists(code)) {
             throw new Error("Tenant with the given name exists.")
         }
-        logger.info("Tenant creating in progress:");
         const result = await tenantRef.set({
             code,
             name,
@@ -17,7 +15,6 @@ exports.createTenant = async (code, name, adminUserEmail) => {
             adminUserEmail,
             users: [adminUserEmail], // Owner is the first user
         });
-        logger.info("Tenant Created:", tenantRef.id);
         return tenantRef.id; // Return the new tenant's ID
     } catch (error) {
         logger.error("Error", error);
@@ -25,15 +22,12 @@ exports.createTenant = async (code, name, adminUserEmail) => {
 }
 
 exports.checkTenantExists = async (code) => {
-    //logger.info("checking tenant");
     const tenantsRef = await db.collection("tenants").doc(code).get();
-    //logger.info("verifyied tenants collection");
     if (tenantsRef.exists) {
-        logger.info(`❌ Tenant with name "${tname}" does not exist.`);
-        return false; // Tenant does not exist
+        logger.info(`❌ Tenant with name "${code}" does not exist.`);
+        return true;
     }
-    //logger.info("verifyied tenants collection2");
-    return true; // Return the tenant's ID
+    return false;
 }
 
 
