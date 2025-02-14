@@ -12,8 +12,7 @@ exports.createTenant = async ({ code, name, adminEmail }) => {
             code,
             name,
             createdAt: new Date(),
-            adminEmail,
-            users: [adminEmail], // Owner is the first user
+            adminEmail
         });
         return tenantRef.id; // Return the new tenant's ID
     } catch (error) {
@@ -29,6 +28,15 @@ exports.checkTenantExists = async (code) => {
         return true;
     }
     return false;
+}
+
+exports.assignUserToTenant = async (tenantCode, uid, email) => {
+    const userRef = await db.collection("tenants").doc(tenantCode).collection("users").doc(uid);
+    const result = await userRef.set({
+        uid,
+        email
+    });
+    logger.info("Assigned user to tenant", { uid, email })
 }
 
 

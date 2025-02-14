@@ -4,6 +4,8 @@ const { verifyToken } = require('../middleware/VerifyTokenMiddleware');
 const router = express.Router();
 
 router.post('/', verifyToken, TenantController.createTenant);
-router.post('/set-tenant-admin', verifyToken, TenantController.addTenantAdmin);
+router.post('/set-tenant-admin', verifyToken, TenantController.addSuperAdmin);
+
+
 
 module.exports = router;

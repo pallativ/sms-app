@@ -21,6 +21,9 @@ exports.createTenant = async (tenantDetails) => {
             });
         }
 
+        // Assigning the user to tenant.
+        await tenantModel.assignUserToTenant(tenantId, userRecord.uid, userRecord.email);
+
         return { tenantId, uid: userRecord.uid };
     }
     catch (error) {
@@ -29,16 +32,6 @@ exports.createTenant = async (tenantDetails) => {
     }
 }
 
-
-async function isUserExists(email) {
-    try {
-        const userRecord = await auth.getUserByEmail(email);
-        return true;
-    }
-    catch (error) {
-        return false;
-    }
-}
 
 async function getUserByEmail(email) {
     try {

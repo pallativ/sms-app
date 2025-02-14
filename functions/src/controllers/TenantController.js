@@ -7,7 +7,7 @@ exports.createTenant = async (req, res) => {
         const { code, name, adminEmail } = req.body;
         if (req.user.role === "super-admin") {
             if (await tenantModel.checkTenantExists(code)) {
-                res.status(400).json({ message: `Tenant already exists`, tenantCode: code, name: name });
+                res.status(409).json({ message: `Tenant already exists`, tenant: { code: code, name: name } });
             }
             else {
                 const tenantDetails = await tenantService.createTenant({ code, name, adminEmail: adminEmail });
@@ -23,7 +23,7 @@ exports.createTenant = async (req, res) => {
     }
 }
 
-exports.addTenantAdmin = async (req, res) => {
+exports.addSuperAdmin = async (req, res) => {
     try {
         if (req.user.email === "admin@msgrouter.in") {
             console.log("Adding Claims to admin user");
