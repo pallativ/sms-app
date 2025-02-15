@@ -13,7 +13,7 @@ exports.createContact = async (req, res) => {
 
 exports.getAllContacts = async (req, res) => {
     try {
-        const contacts = await contactService.getAllContacts(req.user.email);
+        const contacts = await contactService.getAllContacts(req.userInfo);
         return res.status(200).send(contacts);
     } catch (error) {
         res.status(500).json({ error: error.message });

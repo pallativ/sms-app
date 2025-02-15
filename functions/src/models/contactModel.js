@@ -2,10 +2,11 @@ const { db } = require('../../firebaseSetup');
 const { logger } = require('firebase-functions');
 
 /// Get all contacts
-exports.getAllContacts = async function getAllContacts(userEmail) {
+exports.getAllContacts = async function getAllContacts(userInfo) {
     try {
         logger.debug('fetching contacts from contacts collection.');
-        const snapshot = await db.collection('users').doc(userEmail).collection('contacts').get();
+        var tenantDocRef = await db.collection("tenants").doc(userInfo.tenantCode);
+        const snapshot = await tenantDocRef.collection('contacts').get();
         const contacts = [];
         snapshot.forEach(doc => {
             contacts.push({ id: doc.id, ...doc.data() });
@@ -28,8 +29,8 @@ exports.isExists = async function isExists(userInfo, contactEmail) {
 exports.createContact = async function createContact(userInfo, contact) {
     try {
 
-        var tenantDocRef = db.collection("tenants").doc(userInfo.tenantCode);
-        var contactDocRef = tenantDocRef.collection('contacts').doc(contact.email);
+        var tenantDocRef = await db.collection("tenants").doc(userInfo.tenantCode);
+        var contactDocRef = await tenantDocRef.collection('contacts').doc(contact.email);
 
         await contactDocRef.set({
             ...contact,
