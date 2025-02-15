@@ -6,7 +6,7 @@ exports.createTenant = async (tenantDetails) => {
     try {
 
         // Creating the tenant.
-        const tenantId = await tenantModel.createTenant(tenantDetails);
+        const tenantCode = await tenantModel.createTenant(tenantDetails);
 
         // fetch user by email address.
         let userRecord = await getUserByEmail(tenantDetails.adminEmail)
@@ -22,9 +22,13 @@ exports.createTenant = async (tenantDetails) => {
         }
 
         // Assigning the user to tenant.
-        await tenantModel.assignUserToTenant(tenantId, userRecord.uid, userRecord.email);
+        await tenantModel.assignUserToTenant(tenantCode, userRecord.uid, userRecord.email);
 
-        return { tenantId, uid: userRecord.uid };
+        // assigning the claims to tenant Admin.
+        tenantModel.setCustomClaimByName(userRecord.uid, "tenantCode", tenantCode);
+        tenantModel.setCustomClaimByName(userRecord.uid, "role", "tenant-admin");
+
+        return { tenantCode, uid: userRecord.uid };
     }
     catch (error) {
         logger.error('Error in creating the tenant', error);
