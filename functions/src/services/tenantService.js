@@ -25,8 +25,8 @@ exports.createTenant = async (tenantDetails) => {
         await tenantModel.assignUserToTenant(tenantCode, userRecord.uid, userRecord.email);
 
         // assigning the claims to tenant Admin.
-        tenantModel.setCustomClaimByName(userRecord.uid, "tenantCode", tenantCode);
-        tenantModel.setCustomClaimByName(userRecord.uid, "role", "tenant-admin");
+        await tenantModel.setCustomClaimByName(userRecord.uid, "tenantCode", [tenantCode]);
+        await tenantModel.setCustomClaimByName(userRecord.uid, "role", ["tenant-admin"]);
 
         return { tenantCode, uid: userRecord.uid };
     }

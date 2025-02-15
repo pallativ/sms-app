@@ -6,7 +6,7 @@ const { fetchTenantDetails } = require('../middleware/FetchTenantDetailsMiddlewa
 const router = express.Router();
 
 router.get('/', verifyToken, contactController.getAllContacts);
-router.post('/', verifyToken, fetchTenantDetails, contactController.createContact);
+router.post('/', verifyToken, contactController.createContact);
 router.get('/tags', verifyToken, contactController.getTags);
 router.get('/fields', verifyToken, contactController.getCustomFields);
 

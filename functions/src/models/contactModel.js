@@ -18,19 +18,23 @@ exports.getAllContacts = async function getAllContacts(userEmail) {
 }
 
 /// Check if a contact exists
-exports.isExists = async function isExists(userEmail, contactEmail) {
-    const doc = await db.collection("users").doc(userEmail).collection("contacts").doc(contactEmail).get();
+exports.isExists = async function isExists(userInfo, contactEmail) {
+    const doc = await db.collection('tenants').doc(userInfo.tenantCode)
+        .collection("contacts").doc(contactEmail).get();
     return doc.exists;
 }
 
 /// Create a contact
-exports.createContact = async function createContact(owner, contact) {
+exports.createContact = async function createContact(userInfo, contact) {
     try {
 
-        var userDocRef = db.collection('users').doc(owner.email);
-        await userDocRef.set({
-            userId: owner.userId,
-            email: owner.email,
+        var tenantDocRef = db.collection("tenants").doc(userInfo.tenantCode);
+        var contactDocRef = tenantDocRef.collection('contacts').doc(contact.email);
+
+        await contactDocRef.set({
+            ...contact,
+            createdByUserId: userInfo.uid,
+            createdByEmail: userInfo.email,
         });
 
 
@@ -38,7 +42,7 @@ exports.createContact = async function createContact(owner, contact) {
         var tags = contact.tags;
         if (tags !== null) {
             tags.forEach(async tag => {
-                await userDocRef.collection('tags').doc(tag).set({ tag: tag });
+                await tenantDocRef.collection('tags').doc(tag).set({ tag: tag });
             });
         }
 
@@ -50,15 +54,10 @@ exports.createContact = async function createContact(owner, contact) {
                 customFields.push({ name: key, type: typeof contact.customFields[key] })
             }
             customFields.forEach(async field => {
-                await userDocRef.collection('customFields').doc(field.name).set({ ...field });
+                await tenantDocRef.collection('customFields').doc(field.name).set({ ...field });
             });
         }
-
-        const docRef = userDocRef.collection("contacts").doc(contact.email);
-        var createdAt = new Date();
-        await docRef.set({ ...contact, createdAt: createdAt, updatedAt: createdAt });
-        //const res = await db.collection('contacts').add(contact);
-        return docRef.id;
+        return contactDocRef.id;
     } catch (error) {
         throw new Error('Error creating contact: ' + error.message);
     }

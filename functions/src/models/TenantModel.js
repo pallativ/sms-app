@@ -1,6 +1,7 @@
 const admin = require("firebase-admin");
 const db = admin.firestore();
 const { logger } = require('firebase-functions');
+const { auth } = require('../../firebaseSetup');
 
 exports.createTenant = async ({ code, name, adminEmail }) => {
     try {
@@ -75,8 +76,10 @@ exports.setCustomClaimByName = async (uid, claimName, claimValue) => {
         const user = await auth.getUser(uid);
         const currentClaims = user.customClaims || {}; // Default to empty object
         currentClaims[claimName] = claimValue;
-        await auth.setCustomUserClaims(userId, currentClaims);
-        logger.info(`✅ Custom claim set: User ${userId} -> ${claimName}: ${claimValue}`);
+        logger.info("Auth Custom Claims:",user.customClaims)
+        logger.info(currentClaims);
+        await auth.setCustomUserClaims(uid, currentClaims);
+        logger.info(`✅ Custom claim set: User ${uid} -> ${claimName}: ${claimValue}`);
     } catch (error) {
         logger.error("❌ Error setting custom claim:", error);
         throw new Error("Error in setting custom claim");

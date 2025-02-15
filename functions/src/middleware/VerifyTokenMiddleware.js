@@ -7,10 +7,21 @@ exports.verifyToken = async (req, res, next) => {
         if (!token) return res.status(403).json({ message: "Unauthorized" });
         const decodedToken = await auth.verifyIdToken(token);
         req.user = decodedToken;
+        if (decodedToken.tenantCode !== undefined)
+            req.tenantCode = decodedToken.tenantCode[0] || "";
+        req.role = decodedToken.role || "";
+        req.userInfo = {
+            uid: decodedToken.uid,
+            email: decodedToken.email,
+            tenantCode: req.tenantCode,
+            roles: decodedToken.role
+        }
         console.log("decodedToken:", decodedToken);
+        console.log("userInfo:", req.userInfo)
         next();
     } catch (error) {
-        res.status(401).json({ error: "Invalid token" });
+        console.log(error);
+        res.status(401).json({ error: error });
     }
 };
 

@@ -1,10 +1,12 @@
 const contactService = require('../services/contactService');
 const contactModel = require('../models/contactModel');
+const { logger } = require('firebase-functions');
 exports.createContact = async (req, res) => {
     try {
-        const contactId = await contactService.createContact({ userId: req.user.uid, email: req.user.email }, req.body);
+        const contactId = await contactService.createContact(req.userInfo, req.body);
         res.status(201).json({ message: 'Contact created successfully.', id: contactId });
     } catch (error) {
+        logger.error("Error in creating contact", error);
         res.status(500).json({ error: error });
     }
 }

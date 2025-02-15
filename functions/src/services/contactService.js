@@ -46,7 +46,7 @@ exports.getAllContacts = async (userEmail) => {
     }
 }
 
-exports.createContact = async (owner, contact) => {
+exports.createContact = async (userInfo, contact) => {
     const { error, value } = contactSchema.validate(contact, { abortEarly: false });
     if (error) {
         const validationError = new Error('Validation Error');
@@ -54,14 +54,14 @@ exports.createContact = async (owner, contact) => {
         validationError.statusCode = 400; // Bad Request
         throw validationError;;
     }
-    if (await contactModel.isExists(owner.email, value.email)) {
+    if (await contactModel.isExists(userInfo, value.email)) {
         const validationError = new Error('Validation Error');
         validationError.details = [{ message: 'Contact already exists', path: ['email'] }];
         validationError.statusCode = 409; // Conflict
         throw validationError;;
     }
 
-    const contactId = await contactModel.createContact(owner, value);
+    const contactId = await contactModel.createContact(userInfo, value);
     return contactId;
 }
 
