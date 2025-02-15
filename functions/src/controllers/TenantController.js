@@ -11,7 +11,6 @@ exports.createTenant = async (req, res) => {
             }
             else {
                 const tenantDetails = await tenantService.createTenant({ code, name, adminEmail: adminEmail });
-                console.log(tenantDetails)
                 res.status(201).json({ message: 'Tenant created successfully.', id: tenantDetails.tenantId });
             }
         }
@@ -27,7 +26,7 @@ exports.addSuperAdmin = async (req, res) => {
     try {
         if (req.user.email === "admin@msgrouter.in") {
             console.log("Adding Claims to admin user");
-            setCustomClaim(req.user.uid, "super-admin");
+            tenantModel.setCustomClaimRole(req.user.uid, "super-admin");
             res.status(200).json({ message: 'current logged in user set as tenant admin', email: req.user.email });
         }
         else
@@ -37,11 +36,18 @@ exports.addSuperAdmin = async (req, res) => {
     }
 }
 
-async function setCustomClaim(userId, role) {
+exports.getTenantUsers = async (req, res) => {
     try {
-        await auth.setCustomUserClaims(userId, { role });
-        console.log(`✅ Custom claim set: User ${userId} -> Role ${role}`);
+        const { tenantId } = req.params;
+        if (req.user.role === "super-admin" || req.user.tenantCode === tenantCode) {
+            const users = await tenantService.getTenantUsers(tenantId);
+            res.status(200).json({ users });
+        } else {
+            res.status(403).json({ message: 'You are not authorized to view the users of this tenant' });
+        }
     } catch (error) {
-        console.error("❌ Error setting custom claim:", error);
+        res.status(500).json({ error: error });
     }
 }
+
+

@@ -32,6 +32,16 @@ exports.createTenant = async (tenantDetails) => {
     }
 }
 
+exports.getUsersByTenant = async (tenantCode) => {
+    try {
+        const users = await tenantModel.getTenantUsers(tenantCode);
+        return users;
+    } catch (error) {
+        logger.error('Error in retrieving users by tenant', error);
+        throw new Error("Error in retrieving users by tenant");
+    }
+}
+
 
 async function getUserByEmail(email) {
     try {

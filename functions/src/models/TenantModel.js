@@ -21,6 +21,25 @@ exports.createTenant = async ({ code, name, adminEmail }) => {
     }
 }
 
+exports.getTenantUsers = async (tenantCode) => {
+    try {
+        const usersRef = db.collection("tenants").doc(tenantCode).collection("users");
+        const snapshot = await usersRef.get();
+        if (snapshot.empty) {
+            logger.info(`No users found for tenant with code "${tenantCode}".`);
+            return [];
+        }
+        const users = [];
+        snapshot.forEach(doc => {
+            users.push(doc.data());
+        });
+        return users;
+    } catch (error) {
+        logger.error("Error fetching tenant users", error);
+        throw new Error("Error in fetching tenant users");
+    }
+}
+
 exports.checkTenantExists = async (code) => {
     const tenantsRef = await db.collection("tenants").doc(code).get();
     if (tenantsRef.exists) {
@@ -49,4 +68,25 @@ exports.getTenantByUserEmail = async (email) => {
 
     const tenantData = querySnapshot.docs[0].data();
     return { code: tenantData.code, name: tenantData.name };
+}
+
+exports.setCustomClaimByName = async (uid, claimName, claimValue) => {
+    try {
+        const user = await auth.getUser(uid);
+        const currentClaims = user.customClaims || {}; // Default to empty object
+        currentClaims[claimName] = claimValue;
+        await auth.setCustomUserClaims(userId, currentClaims);
+        logger.info(`✅ Custom claim set: User ${userId} -> ${claimName}: ${claimValue}`);
+    } catch (error) {
+        logger.error("❌ Error setting custom claim:", error);
+        throw new Error("Error in setting custom claim");
+    }
+}
+exports.setCustomClaimRole = async (userId,  role) => {
+    try {
+        await auth.setCustomUserClaims(userId, { role: role });
+        console.log(`✅ Custom claim set: User ${userId} -> Role ${role}`);
+    } catch (error) {
+        console.error("❌ Error setting custom claim:", error);
+    }
 }
