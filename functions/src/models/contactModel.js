@@ -65,9 +65,10 @@ exports.createContact = async function createContact(userInfo, contact) {
 }
 
 /// Get a contact by id
-exports.getContactById = async function getContactById(userEmail, contactId) {
+exports.getContactById = async function getContactById(userInfo, contactId) {
     try {
-        const doc = await db.collection('users').doc(userEmail).collection('contacts').doc(contactId).get();
+        var tenantDocRef = await db.collection("tenants").doc(userInfo.tenantCode);
+        const doc = await tenantDocRef.collection('contacts').doc(contactId).get();
         if (!doc.exists) {
             throw new Error('No such contact!');
         }
@@ -78,9 +79,10 @@ exports.getContactById = async function getContactById(userEmail, contactId) {
 }
 
 /// Update a contact
-exports.updateContact = async function updateContact(userEmail, contactId, contact) {
+exports.updateContact = async function updateContact(userInfo, contactId, contact) {
     try {
-        await db.collection('users').doc(userEmail).collection('contacts').doc(contactId).update(contact);
+        var tenantDocRef = await db.collection("tenants").doc(userInfo.tenantCode);
+        await tenantDocRef.collection('contacts').doc(contactId).update(contact);
         return true;
     } catch (error) {
         throw new Error('Error updating contact: ' + error.message);
