@@ -56,6 +56,16 @@ exports.getUsersByTenant = async (tenantCode) => {
     }
 }
 
+exports.impersonateSuperAdmin = async (userInfo, tenantCode) => {
+    try {
+        // Assigning the claims to impersonate tenant Admin.
+        await tenantModel.setCustomClaimByName(userInfo.uid, "tenantCode", [tenantCode]);
+        return { message: "Impersonation successful", uid: userRecord.uid };
+    } catch (error) {
+        logger.error('Error in impersonating tenant admin', error);
+        throw new Error("Error in impersonating tenant admin");
+    }
+}
 
 async function getUserByEmail(email) {
     try {
@@ -67,3 +77,5 @@ async function getUserByEmail(email) {
         return null;
     }
 }
+
+
