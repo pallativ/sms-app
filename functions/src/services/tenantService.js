@@ -36,6 +36,16 @@ exports.createTenant = async (tenantDetails) => {
     }
 }
 
+exports.getAllTenants = async () => {
+    try {
+        const tenants = await tenantModel.getAllTenants();
+        return tenants;
+    } catch (error) {
+        logger.error('Error in retrieving all tenants', error);
+        throw new Error("Error in retrieving all tenants");
+    }
+}
+
 exports.getUsersByTenant = async (tenantCode) => {
     try {
         const users = await tenantModel.getTenantUsers(tenantCode);

@@ -93,3 +93,22 @@ exports.setCustomClaimRole = async (userId,  role) => {
         console.error("❌ Error setting custom claim:", error);
     }
 }
+
+exports.getAllTenants = async () => {
+    try {
+        const tenantsRef = db.collection("tenants");
+        const snapshot = await tenantsRef.get();
+        if (snapshot.empty) {
+            logger.info("No tenants found.");
+            return [];
+        }
+        const tenants = [];
+        snapshot.forEach(doc => {
+            tenants.push(doc.data());
+        });
+        return tenants;
+    } catch (error) {
+        logger.error("Error fetching tenants", error);
+        throw new Error("Error in fetching tenants");
+    }
+}
