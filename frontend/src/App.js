@@ -11,6 +11,8 @@ import WhatsupPage from './pages/WhatsupPage/WhatsupPage';
 import AboutPage from './pages/AboutPage/AboutPage';
 import SendSms from './components/Sms/SendSms';
 import MessageLogList from './components/MessageLogs/MessageLogList';
+import TenantCreationPage from './pages/TenantCreationPage/TenantCreationPage';
+
 
 function App() {
     return (
@@ -34,6 +36,7 @@ function App() {
                         </Route>
                         <Route path="whatsup" element={<WhatsupPage />} />
                         <Route path="about" element={<AboutPage />} />
+                        <Route path="tenant-configuration" element={<TenantCreationPage />}/>
                     </Route>
                 </Routes>
             </Router>

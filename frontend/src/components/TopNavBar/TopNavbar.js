@@ -15,6 +15,7 @@ const TopNavbar = () => {
                 <ItemDirective text="Contacts" align="left" />
                 <ItemDirective text="Sms" align="left" />
                 <ItemDirective text="Contact" align="left" />
+                <ItemDirective text="Tenant Config" align="left" />
                 <ItemDirective text={user.email} align="right" />
 
                 {/* Add user profile or settings */}
