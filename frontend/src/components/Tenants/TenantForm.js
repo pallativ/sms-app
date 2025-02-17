@@ -13,12 +13,13 @@ import {
 } from "@syncfusion/ej2-react-grids";
 import { FormValidator } from "@syncfusion/ej2-inputs";
 
-const TenantForm = () => {
+const TenantForm = ({ onFormSubmit }) => {
     const [formData, setFormData] = useState({
         tenantCode: "",
         tenantName: "",
         adminEmail: "",
     });
+
 
     const formRef = useRef(null);
     const validatorRef = useRef(null);
@@ -45,7 +46,9 @@ const TenantForm = () => {
         const name = args?.element?.name || args.target.name;
         const value = args?.value || args.target.value || "";
 
+
         setFormData({ ...formData, [name]: value });
+
     };
 
     const handleSubmit = (e) => {

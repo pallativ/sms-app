@@ -21,6 +21,7 @@ const AppBar = () => {
                 <ButtonComponent isPrimary="true" onClick={() => navigate('sms')} cssClass="small-btn">SMS</ButtonComponent>
                 <ButtonComponent isPrimary="true" onClick={() => navigate('whatsup')} cssClass="small-btn">Whatsup</ButtonComponent>
                 <ButtonComponent isPrimary="true" onClick={() => navigate('contacts')} cssClass="small-btn">Contacts</ButtonComponent>
+                <ButtonComponent isPrimary="true" onClick={() => navigate('tenant-configuration')} cssClass="small-btn">Tenant Config</ButtonComponent>
                 <ButtonComponent isPrimary="true" onClick={() => navigate('about')} cssClass="small-btn">About</ButtonComponent>
             </div>
 

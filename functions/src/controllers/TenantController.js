@@ -22,6 +22,19 @@ exports.createTenant = async (req, res) => {
     }
 }
 
+exports.getAllTenants = async (req, res) => {
+    try {
+        if (req.user.role === "super-admin") {
+            const tenants = await tenantService.getAllTenants();
+            res.status(200).json({ tenants });
+        } else {
+            res.status(403).json({ message: 'You are not authorized to view all tenants' });
+        }
+    } catch (error) {
+        res.status(500).json({ error: error });
+    }
+}
+
 exports.addSuperAdmin = async (req, res) => {
     try {
         if (req.user.email === "admin@msgrouter.in") {

@@ -7,6 +7,7 @@ const router = express.Router();
 
 router.get('/', verifyToken, contactController.getAllContacts);
 router.post('/', verifyToken, contactController.createContact);
+router.put('/', verifyToken, contactController.updateContact);
 router.get('/tags', verifyToken, contactController.getTags);
 router.get('/fields', verifyToken, contactController.getCustomFields);
 

@@ -56,7 +56,7 @@ const ContactList = ({ contacts }) => {
                 alt="User"
                 style={{ width: "20px", height: "20px", marginRight: "5px" }}
             />
-            <span>{props.firstName}</span>
+            <span>{props.firstName} {props.lastName}</span>
         </div>
     );
 

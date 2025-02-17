@@ -11,9 +11,19 @@ exports.createContact = async (req, res) => {
     }
 }
 
+exports.updateContact = async (req, res) => {
+    try {
+        const updatedContact = await contactService.updateContact(req.userInfo,  req.body);
+        res.status(200).json({ message: 'Contact updated successfully.', contact: updatedContact });
+    } catch (error) {
+        logger.error("Error in updating contact", error);
+        res.status(500).json({ error: error.message });
+    }
+}
+
 exports.getAllContacts = async (req, res) => {
     try {
-        const contacts = await contactService.getAllContacts(req.user.email);
+        const contacts = await contactService.getAllContacts(req.userInfo);
         return res.status(200).send(contacts);
     } catch (error) {
         res.status(500).json({ error: error.message });

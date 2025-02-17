@@ -56,7 +56,7 @@ const ContactsPage = () => {
         <React.Fragment>
             <h1>Contacts</h1>
             <p>Welcome to the Contacts Page.</p>
-            {<ContactList contacts={contacts} />}
+            {contacts.length > 0 && <ContactList contacts={contacts} />}
 
             <div className="p-8" style={{ width: "400px" }}>
                 <h2 className="text-xl font-bold mb-4">

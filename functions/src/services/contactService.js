@@ -65,3 +65,22 @@ exports.createContact = async (userInfo, contact) => {
     return contactId;
 }
 
+exports.updateContact = async (userInfo, contact) => {
+    const { error, value } = contactSchema.validate(contact, { abortEarly: false });
+    if (error) {
+        const validationError = new Error('Validation Error');
+        validationError.details = error.details.map((err) => ({ message: err.message, path: err.path, }));
+        validationError.statusCode = 400; // Bad Request
+        throw validationError;
+    }
+
+    const existingContact = await contactModel.isExists(userInfo, value.email);
+    if (!existingContact) {
+        const notFoundError = new Error('Contact not found');
+        notFoundError.statusCode = 404; // Not Found
+        throw notFoundError;
+    }
+
+    await contactModel.createContact(userInfo, value);
+    return { message: 'Contact updated successfully' };
+}

@@ -2,10 +2,11 @@ const { db } = require('../../firebaseSetup');
 const { logger } = require('firebase-functions');
 
 /// Get all contacts
-exports.getAllContacts = async function getAllContacts(userEmail) {
+exports.getAllContacts = async function getAllContacts(userInfo) {
     try {
         logger.debug('fetching contacts from contacts collection.');
-        const snapshot = await db.collection('users').doc(userEmail).collection('contacts').get();
+        var tenantDocRef = await db.collection("tenants").doc(userInfo.tenantCode);
+        const snapshot = await tenantDocRef.collection('contacts').get();
         const contacts = [];
         snapshot.forEach(doc => {
             contacts.push({ id: doc.id, ...doc.data() });
@@ -28,8 +29,8 @@ exports.isExists = async function isExists(userInfo, contactEmail) {
 exports.createContact = async function createContact(userInfo, contact) {
     try {
 
-        var tenantDocRef = db.collection("tenants").doc(userInfo.tenantCode);
-        var contactDocRef = tenantDocRef.collection('contacts').doc(contact.email);
+        var tenantDocRef = await db.collection("tenants").doc(userInfo.tenantCode);
+        var contactDocRef = await tenantDocRef.collection('contacts').doc(contact.email);
 
         await contactDocRef.set({
             ...contact,
@@ -64,9 +65,10 @@ exports.createContact = async function createContact(userInfo, contact) {
 }
 
 /// Get a contact by id
-exports.getContactById = async function getContactById(userEmail, contactId) {
+exports.getContactById = async function getContactById(userInfo, contactId) {
     try {
-        const doc = await db.collection('users').doc(userEmail).collection('contacts').doc(contactId).get();
+        var tenantDocRef = await db.collection("tenants").doc(userInfo.tenantCode);
+        const doc = await tenantDocRef.collection('contacts').doc(contactId).get();
         if (!doc.exists) {
             throw new Error('No such contact!');
         }
@@ -77,9 +79,10 @@ exports.getContactById = async function getContactById(userEmail, contactId) {
 }
 
 /// Update a contact
-exports.updateContact = async function updateContact(userEmail, contactId, contact) {
+exports.updateContact = async function updateContact(userInfo, contactId, contact) {
     try {
-        await db.collection('users').doc(userEmail).collection('contacts').doc(contactId).update(contact);
+        var tenantDocRef = await db.collection("tenants").doc(userInfo.tenantCode);
+        await tenantDocRef.collection('contacts').doc(contactId).update(contact);
         return true;
     } catch (error) {
         throw new Error('Error updating contact: ' + error.message);
