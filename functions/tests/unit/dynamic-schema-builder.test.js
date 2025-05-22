@@ -273,7 +273,7 @@ describe('DynamicSchemaBuilder', () => {
         beforeEach(() => {
             schema = builder.buildSchema(fields);
         });
-        test('Create Schema and validate - Enum', () => {
+        test('Create schema and validate - enum', () => {
             // Valid enum value
             {
                 const { error, value } = schema.validate({ status: 'active' });
@@ -282,8 +282,8 @@ describe('DynamicSchemaBuilder', () => {
             }
         });
 
-        test('Create Schema and validate - Enum & Default Value', () => {
-            var localFields = [ ...fields ];
+        test('Create schema and validate - enum & Default Value', () => {
+            var localFields = [...fields];
             localFields[0].required = false;
             var localSchema = builder.buildSchema(localFields);
             // No enum value provided, should use default
@@ -331,6 +331,35 @@ describe('DynamicSchemaBuilder', () => {
                 const { error } = schema.validate({ status: ['archived'] });
                 expect(error).toBeTruthy();
                 expect(error.details[0].message).toBe('"status[0]" must be one of [active, inactive, pending]');
+            }
+        });
+    });
+
+    describe("Building schema for multiple types", () => {
+        test("Verify multiple types", () => {
+            const fields = [
+                { name: 'age', type: 'number', required: true, multiple: false },
+                { name: 'isActive', type: 'boolean', required: true, multiple: false },
+                { name: 'createdAt', type: 'date', required: true, multiple: false },
+                { name: 'email', type: 'email', required: true, multiple: false, default_value: 'abc@gmail.com' },
+                { name: 'status', type: 'enum', required: false, multiple: false, options: [{ label: 'Active', value: 'active' }, { label: 'Inactive', value: 'inactive' }], default_value: 'active' }
+            ];
+
+            // Test with all required fields
+            {
+                const schema = builder.buildSchema(fields);
+                const { error, value } = schema.validate({ age: 25, isActive: true, email: 'pkondalu@gmail.com', createdAt: new Date('2023-01-01') });
+                expect(error).toBeFalsy();
+                expect(value).toEqual({ age: 25, isActive: true, email: 'pkondalu@gmail.com', createdAt: new Date("2023-01-01"), status: 'active' });
+            }
+
+            // Test with missing required fields
+            {
+                fields[3].required = false;
+                const schema = builder.buildSchema(fields);
+                const { error, value } = schema.validate({ age: 25, isActive: true, createdAt: new Date('2023-01-01') });
+                expect(error).toBeFalsy();
+                expect(value).toEqual({ age: 25, isActive: true, email: 'abc@gmail.com', createdAt: new Date("2023-01-01"), status: 'active' });
             }
         });
     });
