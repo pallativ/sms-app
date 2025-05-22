@@ -70,3 +70,4 @@ node_modules/
 
 /functions/secrets.json
 /build
+/functions/.vs/
