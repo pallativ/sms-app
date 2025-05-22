@@ -154,5 +154,185 @@ describe('DynamicSchemaBuilder', () => {
             }
         });
     });
+
+    describe('Building schema for date types.', () => {
+        test('Create Schema and validate - Date', () => {
+            const fields = [
+                { name: 'createdAt', type: 'date', required: true, multiple: false }
+            ];
+
+            const schema = builder.buildSchema(fields);
+
+            // Valid date
+            {
+                const { error, value } = schema.validate({ createdAt: new Date('2023-01-01') });
+                expect(error).toBeFalsy();
+                expect(value).toEqual({ createdAt: new Date('2023-01-01') });
+            }
+
+            // Invalid date (string)
+            {
+                const { error } = schema.validate({ createdAt: 'not-a-date' });
+                expect(error).toBeTruthy();
+            }
+
+            // Missing required date
+            {
+                const { error } = schema.validate({});
+                expect(error).toBeTruthy();
+            }
+        });
+
+        test('Create Schema and validate - Date & Default Value', () => {
+            const defaultDate = new Date('2022-12-31');
+            const fields = [
+                { name: 'createdAt', type: 'date', required: false, multiple: false, default_value: defaultDate }
+            ];
+
+            const schema = builder.buildSchema(fields);
+
+            // Provided date
+            {
+                const { error, value } = schema.validate({ createdAt: new Date('2023-01-01') });
+                expect(error).toBeFalsy();
+                expect(value).toEqual({ createdAt: new Date('2023-01-01') });
+            }
+
+            // No date provided, should use default
+            {
+                const { error, value } = schema.validate({});
+                expect(error).toBeFalsy();
+                // Compare ISO strings for equality
+                expect(value.createdAt.toISOString()).toBe(defaultDate.toISOString());
+            }
+        });
+    });
+
+    describe('Building schema for email types.', () => {
+        test('Create Schema and validate - Email', () => {
+            const fields = [
+                { name: 'email', type: 'email', required: true, multiple: false }
+            ];
+            const schema = builder.buildSchema(fields);
+            // Valid email
+            {
+                const { error, value } = schema.validate({ email: 'abc@gmail.com' });
+                expect(error).toBeFalsy();
+                expect(value).toEqual({ email: 'abc@gmail.com' });
+            };
+
+            // no email
+            {
+                const { error, value } = schema.validate({ email: 'abcded' });
+                expect(error).toBeTruthy();
+            };
+
+            // no email
+            {
+                const { error, value } = schema.validate({});
+                expect(error).toBeTruthy();
+            };
+        });
+        test('Create Schema and validate - Email & Default Value', () => {
+            const fields = [
+                {
+                    name: 'email', type: 'email', required: false, multiple: false, default_value: 'abc@gmail.com'
+                }
+            ];
+            const schema = builder.buildSchema(fields);
+
+            {
+                const { error, value } = schema.validate({ email: 'abc1@gmail.com' });
+                expect(error).toBeFalsy();
+                expect(value).toEqual({ email: 'abc1@gmail.com' });
+            }
+
+            // default value behaviour
+            {
+                const { error, value } = schema.validate({});
+                expect(error).toBeFalsy();
+                expect(value).toEqual({ email: 'abc@gmail.com' });
+            }
+        });
+    });
+
+    describe('Building schema for enum types.', () => {
+        let schema;
+        const fields = [{
+            name: 'status',
+            type: 'enum',
+            required: true,
+            multiple: false,
+            options: [
+                { label: 'Active', value: 'active' },
+                { label: 'Inactive', value: 'inactive' },
+                { label: 'Pending', value: 'pending' }
+            ],
+            default_value: 'active'
+        }];
+        beforeEach(() => {
+            schema = builder.buildSchema(fields);
+        });
+        test('Create Schema and validate - Enum', () => {
+            // Valid enum value
+            {
+                const { error, value } = schema.validate({ status: 'active' });
+                expect(error).toBeFalsy();
+                expect(value).toEqual({ status: 'active' });
+            }
+        });
+
+        test('Create Schema and validate - Enum & Default Value', () => {
+            var localFields = [ ...fields ];
+            localFields[0].required = false;
+            var localSchema = builder.buildSchema(localFields);
+            // No enum value provided, should use default
+            const { error, value } = localSchema.validate({});
+            expect(error).toBeFalsy();
+            expect(value).toEqual({ status: 'active' });
+        });
+
+        test("Verify missing enum attribute", () => {
+            // Missing required enum value
+            const { error, value } = schema.validate({});
+            expect(error).toBeFalsy();
+            expect(value).toEqual({ status: 'active' });
+        });
+
+        test("Verify invalid enum value", () => {
+            // Invalid enum value
+            const { error } = schema.validate({ status: 'archived' });
+            expect(error).toBeTruthy();
+            expect(error.details[0].message).toBe('"status" must be one of [active, inactive, pending]');
+        });
+
+        test("Verify multiple enum values", () => {
+            const fields = [{
+                name: 'status',
+                type: 'enum',
+                required: true,
+                multiple: true,
+                options: [
+                    { label: 'Active', value: 'active' },
+                    { label: 'Inactive', value: 'inactive' },
+                    { label: 'Pending', value: 'pending' }
+                ],
+                default_value: ['active']
+            }];
+            const schema = builder.buildSchema(fields);
+            // Valid enum values
+            {
+                const { error, value } = schema.validate({ status: ['active', 'inactive'] });
+                expect(error).toBeFalsy();
+                expect(value).toEqual({ status: ['active', 'inactive'] });
+            }
+            // Invalid enum values
+            {
+                const { error } = schema.validate({ status: ['archived'] });
+                expect(error).toBeTruthy();
+                expect(error.details[0].message).toBe('"status[0]" must be one of [active, inactive, pending]');
+            }
+        });
+    });
 });
 
