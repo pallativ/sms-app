@@ -6,7 +6,6 @@ describe('Custom Data Object Repository', () => {
 		// Delete all test data
 		const items = await customDataObjectRepository.getAll();
 		for (const item of items) {
-			console.log('Deleting the item:', item.id);
 			await customDataObjectRepository.delete(item.id);
 		};
 
