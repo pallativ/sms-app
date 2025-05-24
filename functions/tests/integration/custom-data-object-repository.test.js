@@ -18,4 +18,17 @@ describe('Custom Data Object Repository', () => {
 		expect(cdos[0].id).not.toBeNull();
 		expect(cdos[0]).toEqual({ id: cdos[0].id, name: 'Payment Schedule', code: 'code' });
 	});
+
+	it("should retrieve single item using 'getByName' method", async () => {
+		await customDataObjectRepository.create({ name: 'new CDO', code : 'code' });
+		const cdos = await customDataObjectRepository.getByName("new CDO");
+		expect(cdos.length).toBeGreaterThan(0);
+		expect(cdos[0].name).toBe('new CDO');
+	});
+
+	it("should return null if no item found.", async () => {
+		await customDataObjectRepository.create({ name: 'new CDO', code: 'code' });
+		const cdos = await customDataObjectRepository.getByName("new CDO12");
+		expect(cdos.length).toBe(0);
+	});
 });

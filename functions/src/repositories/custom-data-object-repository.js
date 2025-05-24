@@ -1,6 +1,6 @@
 const { db } = require('../../firebaseSetup');
 const { buildObjectFromDoc } = require('../utils/object-extensions');
-const fields = ["id", "name", "code", "description"];
+const fields = ["id", "name", "code", "description", "createdAt", "updatedAt", "createdBy", "updatedBy" ];
 class CustomDataObjectRepository {
     constructor() {
         this.collection = db.collection("custom-data-objects");
@@ -8,6 +8,11 @@ class CustomDataObjectRepository {
 
     async getAll() {
         const snapshot = await this.collection.get();
+        return snapshot.docs.map(doc => buildObjectFromDoc(doc, fields));
+    }
+
+    async getByName(name) {
+        const snapshot = await this.collection.where("name", "==", name).get();
         return snapshot.docs.map(doc => buildObjectFromDoc(doc, fields));
     }
 
