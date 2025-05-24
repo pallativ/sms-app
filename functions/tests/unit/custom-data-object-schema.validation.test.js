@@ -2,7 +2,6 @@ const customDataObjectSchema = require('../../src/schema/custom-data-object-sche
 
 describe('customDataObjectSchema', () => {
     const validAttribute = {
-        id: 1,
         code: "Code",
         order: 1,
         name: 'Attribute Name',
