@@ -1,4 +1,4 @@
-const DynamicSchemaBuilder = require('../../src/schema/dynamicSchemaBuilder');
+const DynamicSchemaBuilder = require('../../src/schema/dynamic-schema-builder');
 
 describe('DynamicSchemaBuilder', () => {
     let builder;
@@ -62,8 +62,8 @@ describe('DynamicSchemaBuilder', () => {
             {
                 const result = schema.validate({ "sex": 'Male' });
                 expect(result.error).toBeFalsy();
-                console.log('Error object:', result.error);
-                console.log('Validate Method Result:', result.value);
+                //console.log('Error object:', result.error);
+                //console.log('Validate Method Result:', result.value);
                 expect(result.value).toEqual({ sex: 'Male' });
             }
 

@@ -8,6 +8,7 @@ const optionSchema = Joi.object({
 
 // Define a validation schema using Joi
 const attributesSchema = Joi.object({
+    id : Joi.number().required(),
     name: Joi.string().required().max(30),
     code: Joi.string().alphanum().required().max(100),
     type: Joi.string().valid('string', 'number', 'boolean', 'date', 'enum').required(),
@@ -22,7 +23,7 @@ const attributesSchema = Joi.object({
             otherwise: Joi.forbidden()
         }),
     id_columns: Joi.array().items(Joi.string()).required().messages({
-        'array.base': 'Attributes must be an array',
+        'array.base': 'id_columns must be an array.',
     })
 });
 

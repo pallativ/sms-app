@@ -1,5 +1,5 @@
 const Joi = require('joi');
-const attributeModelSchema = require('./attributesSchema');
+const attributeModelSchema = require('../../src/schema/attributes-schema');
 
 const customDataObjectSchema = Joi.object({
     id: Joi.number().required(),
@@ -11,7 +11,7 @@ const customDataObjectSchema = Joi.object({
     createdAt: Joi.string().isoDate().required(),
     updatedAt: Joi.string().isoDate().required(),
     createdBy : Joi.string().required(),
-    updatedBy : Joi.string().required()
+    updatedBy: Joi.string().required(),
 });
 
 module.exports = customDataObjectSchema;
