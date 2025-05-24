@@ -25,12 +25,11 @@ describe('customDataObjectSchema', () => {
         updatedBy: 'user2'
     };
 
-
     describe('attributes', () => {
         test('should validate a valid custom data object', () => {
             const { error, value } = customDataObjectSchema.validate(validDataObject);
             expect(error).toBeUndefined();
-            expect(value).toEqual(validDataObject);
+            expect(value).toEqual({ ...validDataObject, records: [], auditLog: [] });
         });
 
         test('should fail if required fields are missing', () => {
@@ -88,6 +87,20 @@ describe('customDataObjectSchema', () => {
             expect(error.details.some(d => {
                 return d.message.includes('"attributes" must be an array');
             })).toBe(true);
+        });
+
+        test('should accept records as an array of objects', () => {
+            const withRecords = { ...validDataObject, records: [{ foo: 'bar' }] };
+            const { error, value } = customDataObjectSchema.validate(withRecords);
+            expect(error).toBeUndefined();
+            expect(value.records).toEqual([{ foo: 'bar' }]);
+        });
+
+        test('should default records to empty array if not provided', () => {
+            const { records, ...withoutRecords } = validDataObject;
+            const { error, value } = customDataObjectSchema.validate(withoutRecords);
+            expect(error).toBeUndefined();
+            expect(value.records).toEqual([]);
         });
     });
 });
