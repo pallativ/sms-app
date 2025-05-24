@@ -1,49 +1,57 @@
 const { db } = require('../../firebaseSetup');
+const { buildObjectFromDoc } = require('../utils/object-extensions');
+const fields = ["id", "name", "code", "type", "required", "order", "default", "multiselect", "updatedBy"];
 
 class AttributeRepository {
-    constructor(custom_data_object_id) {
-        this.collection = db.collection('custom-data-objects').get(custom_data_object_id).collection('attributes');
+    constructor() {
+    }
+    getCollection(custom_data_object_id) {
+        return db.collection('custom-data-objects').doc(custom_data_object_id).collection('attributes');
     }
 
-    async getByName(name) {
-        const snapshot = await this.collection.where('name', '==', name).get();
+    async getByName(custom_data_object_id, name) {
+        const snapshot = await this.getCollection(custom_data_object_id).where('name', '==', name).get();
         if (snapshot.empty) return null;
-        return snapshot.docs.map(doc => ({ id: doc.id, name: doc.name, }))[0];
+        return snapshot.docs.map(doc => buildObjectFromDoc(doc, fields))[0];
     }
 
-    async getAll() {
-        const snapshot = await this.collection.get();
-        return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    async getAll(custom_data_object_id) {
+        const snapshot = await this.getCollection(custom_data_object_id).get();
+        return snapshot.docs.map(doc => {
+            /*console.log('Attribute:', doc.id, doc.data());*/
+            return buildObjectFromDoc(doc, fields);
+        });
     }
 
-    async createOne(attribute) {
-        const docRef = await this.collection.add(attribute);
+    async createOne(custom_data_object_id, attribute) {
+        var collectionRef =  this.getCollection(custom_data_object_id);
+        const docRef = await collectionRef.add(attribute);
         const doc = await docRef.get();
-        return { id: doc.id, ...doc.data() };
+        return buildObjectFromDoc(doc, fields);
     }
 
-    async createMultiple(attributes) {
-        const batch = this.db.batch();
+    async createMultiple(custom_data_object_id, attributes) {
+        const batch = db.batch();
         const refs = [];
         attributes.forEach(attr => {
-            const docRef = this.collection.doc();
+            const docRef = this.getCollection(custom_data_object_id).doc();
             batch.set(docRef, attr);
             refs.push(docRef);
         });
         await batch.commit();
         const docs = await Promise.all(refs.map(ref => ref.get()));
-        return docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        return docs.map(doc => buildObjectFromDoc(doc, fields));
     }
 
-    async deleteOne(id) {
-        await this.collection.doc(id).delete();
+    async deleteOne(custom_data_object_id, id) {
+        await this.getCollection(custom_data_object_id).doc(id).delete();
         return { id };
     }
 
-    async DeleteMany(ids) {
-        const batch = this.db.batch();
+    async deleteMany(custom_data_object_id, ids) {
+        const batch = db.batch();
         ids.forEach(id => {
-            const docRef = this.collection.doc(id);
+            const docRef = this.getCollection(custom_data_object_id).doc(id);
             batch.delete(docRef);
         });
         await batch.commit();
@@ -51,4 +59,4 @@ class AttributeRepository {
     }
 }
 
-module.exports = AttributeRepository;
+module.exports = new AttributeRepository();

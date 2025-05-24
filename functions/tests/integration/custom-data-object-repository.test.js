@@ -1,14 +1,20 @@
 const customDataObjectRepository = require('../../src/repositories/custom-data-object-repository');
 
 describe('Custom Data Object Repository', () => {
-
 	afterEach(async () => {
 		// Delete all test data
 		const items = await customDataObjectRepository.getAll();
 		for (const item of items) {
 			await customDataObjectRepository.delete(item.id);
 		};
+	});
 
+	// Clean up before and after.
+	beforeAll(async () => {
+		const items = await customDataObjectRepository.getAll();
+		for (const item of items) {
+			await customDataObjectRepository.delete(item.id);
+		};
 	});
 
 	it('create a new custom data object', async () => {
@@ -78,5 +84,12 @@ describe('Custom Data Object Repository', () => {
 		expect(cdos.length).toBe(0);
 	});
 
-
+	it("should return all items", async () => {
+		await customDataObjectRepository.create({ name: 'CDO1', code: 'code1' });
+		await customDataObjectRepository.create({ name: 'CDO2', code: 'code2' });
+		const cdos = await customDataObjectRepository.getAll();
+		expect(cdos.length).toBeGreaterThanOrEqual(2);
+		expect(cdos.some(cdo => cdo.name === 'CDO1')).toBe(true);
+		expect(cdos.some(cdo => cdo.name === 'CDO2')).toBe(true);
+	});
 });

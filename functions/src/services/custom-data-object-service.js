@@ -1,4 +1,5 @@
 const customDataObjectRepository = require('../repositories/custom-data-object-repository');
+const attributesRepository = require('../repositories/attribute-repository');
 const customDataObjectSchema = require('../schema/custom-data-object-schema');
 
 class CustomDataObjectService {
@@ -13,11 +14,11 @@ class CustomDataObjectService {
         return await customDataObjectRepository.getByName(name);
     }
 
-    async getAttributes(id) {
-        if (!id) {
+    async getAttributes(custom_object_id) {
+        if (!custom_object_id) {
             throw new Error('ID is required to get attributes.');
         }
-        return await customDataObjectRepository.getAttributes(id);
+        return await attributesRepository.getAll();
     }
 
     async getRecords(id) {

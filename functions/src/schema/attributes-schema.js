@@ -8,7 +8,6 @@ const optionSchema = Joi.object({
 
 // Define a validation schema using Joi
 const attributesSchema = Joi.object({
-    id : Joi.number().required(),
     name: Joi.string().required().max(30),
     code: Joi.string().alphanum().required().max(100),
     type: Joi.string().valid('string', 'number', 'boolean', 'date', 'enum').required(),
