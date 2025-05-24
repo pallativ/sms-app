@@ -1,6 +1,7 @@
 const { db } = require('../../firebaseSetup');
+const _ = require('lodash');
 const { buildObjectFromDoc } = require('../utils/object-extensions');
-const fields = ["id", "name", "code", "description", "createdAt", "updatedAt", "createdBy", "updatedBy" ];
+const fields = ["id", "name", "code", "description", "attributes", "createdAt", "updatedAt", "createdBy", "updatedBy" ];
 class CustomDataObjectRepository {
     constructor() {
         this.collection = db.collection("custom-data-objects");
@@ -17,7 +18,8 @@ class CustomDataObjectRepository {
     }
 
     async create(data) {
-        const docRef = await this.collection.add(data);
+        var parentDoc = _.omit(data, ['attributes', 'records', 'auditLog']); // Ensure no unwanted fields are included)
+        const docRef = await this.collection.add(parentDoc);
         const doc = await docRef.get();
         return { id: doc.id, ...doc.data() };
     }

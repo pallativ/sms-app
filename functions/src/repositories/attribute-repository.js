@@ -1,9 +1,8 @@
-const { getFirestore } = require('firebase-admin/firestore');
+const { db } = require('../../firebaseSetup');
 
 class AttributeRepository {
     constructor(custom_data_object_id) {
-        this.db = getFirestore();
-        this.collection = this.db.collection('custom-data-objects').get(custom_data_object_id).collection('attributes');
+        this.collection = db.collection('custom-data-objects').get(custom_data_object_id).collection('attributes');
     }
 
     async getByName(name) {
