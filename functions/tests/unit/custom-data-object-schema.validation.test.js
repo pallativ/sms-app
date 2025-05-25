@@ -7,19 +7,16 @@ describe('customDataObjectSchema', () => {
         name: 'Attribute Name',
         type: 'string',
         multiselect: false,
-        id_columns: ["id", "code"],
         required: true
     };
 
     const validDataObject = {
-        id: 123,
         name: 'Test Object',
-        internalName: 'test_object',
         code: 'TEST123',
         description: 'A test custom data object',
         attributes: [validAttribute],
-        createdAt: '2024-06-01T12:00:00.000Z',
-        updatedAt: '2024-06-01T12:00:00.000Z',
+        createdAt: new Date('2024-06-01T12:00:00.000Z'),
+        updatedAt: new Date('2024-06-01T12:00:00.000Z'),
         createdBy: 'user1',
         updatedBy: 'user2'
     };
@@ -34,7 +31,7 @@ describe('customDataObjectSchema', () => {
         test('should fail if required fields are missing', () => {
             const { error } = customDataObjectSchema.validate({});
             expect(error).toBeDefined();
-            expect(error.details.some(d => d.message.includes('"id" is required'))).toBe(true);
+            expect(error.details.some(d => d.message.includes('"name" is required'))).toBe(true);
         });
 
         test('should fail if name exceeds max length', () => {
@@ -61,8 +58,9 @@ describe('customDataObjectSchema', () => {
         test('should fail if createdAt is not ISO date', () => {
             const invalid = { ...validDataObject, createdAt: 'not-a-date' };
             const { error } = customDataObjectSchema.validate(invalid);
+            /*console.log(error);*/
             expect(error).toBeDefined();
-            expect(error.details.some(d => d.message.includes('"createdAt" must be in iso format'))).toBe(true);
+            expect(error.details.some(d => d.message.includes('"createdAt" must be a valid date'))).toBe(true);
         });
 
         test('should fail if updatedAt is missing', () => {

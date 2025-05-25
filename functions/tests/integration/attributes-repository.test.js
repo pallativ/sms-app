@@ -18,10 +18,17 @@ describe('Verify Attributes Repository', () => {
         records: [{ firstName: 'Veera', type: "string", isRequired: true }]
     };
 
+    async function clearCDOsCollection() {
+        const items = await customDataObjectRepository.getAll();
+        for (const item of items) {
+            await customDataObjectRepository.delete(item.id);
+        };
+    }
+
     // Clean up before and after
     beforeAll(async () => {
         // Ensure test collection exists
-        await customDataObjectRepository.delete(newCdo.name);
+        await clearCDOsCollection();
         await customDataObjectRepository.create(newCdo);
         await attributeRepository.createOne(newCdo.name, validAttribute);
     });
@@ -32,7 +39,7 @@ describe('Verify Attributes Repository', () => {
         for (const attr of attrs) {
             await attributeRepository.deleteOne(newCdo.name, attr.id);
         }
-        await customDataObjectRepository.delete(newCdo.name);
+        await clearCDOsCollection();
     });
 
     test('createOne should add an attribute', async () => {

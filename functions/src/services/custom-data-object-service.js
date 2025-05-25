@@ -7,11 +7,17 @@ class CustomDataObjectService {
         return await customDataObjectRepository.getAll();
     }
 
-    async getByName(name) {
+    async getByName(name, includeAttributes = false) {
         if (!name) {
             throw new Error('Name is required.');
         }
-        return await customDataObjectRepository.getByName(name);
+        var custom_data_object = await customDataObjectRepository.getByName(name);
+        if (custom_data_object.length > 0) {
+            custom_data_object = { ...custom_data_object[0]}
+        }
+        custom_data_object.attributes = includeAttributes ? await attributesRepository.getAll(custom_data_object.id) : undefined;
+        //console.log('Custom Data Object:', custom_data_object);
+        return custom_data_object;
     }
 
     async getAttributes(custom_object_id) {
@@ -36,11 +42,19 @@ class CustomDataObjectService {
     }
 
     async create(data) {
+        data.createdAt = new Date();
+        data.updatedAt = new Date();
+        data.createdBy = 'system'; // Replace with actual user ID if available
+        data.updatedBy = 'system'; // Replace with actual user ID if available
         const { error, value } = customDataObjectSchema.validate(data, { abortEarly: false });
         if (error) {
             throw new Error(`Validation failed: ${error.details.map(x => x.message).join(', ')}`);
         }
-        return await customDataObjectRepository.create(value);
+        var new_cdo = await customDataObjectRepository.create(value);
+        if (value.attributes && value.attributes.length > 0) {
+            await attributesRepository.createMultiple(new_cdo.id, value.attributes);
+        }
+        return new_cdo;
     }
 
     async delete(id) {

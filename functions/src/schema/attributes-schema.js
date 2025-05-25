@@ -14,16 +14,13 @@ const attributesSchema = Joi.object({
     required: Joi.boolean().default(false).required(),
     order: Joi.number().integer().min(0).required(),
     default: Joi.any(),
-    multiselect: Joi.boolean().required().default(false),
+    multiselect: Joi.boolean().default(false).required(),
     options: Joi.alternatives()
         .conditional('type', {
             is: 'enum',
             then: Joi.array().items(optionSchema).min(1).required(),
             otherwise: Joi.forbidden()
-        }),
-    id_columns: Joi.array().items(Joi.string()).required().messages({
-        'array.base': 'id_columns must be an array.',
-    })
+        })
 });
 
 module.exports = attributesSchema;
