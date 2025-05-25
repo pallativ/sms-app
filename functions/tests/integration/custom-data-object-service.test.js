@@ -128,6 +128,18 @@ describe('CustomDataObjectService', () => {
             //await expect(customDataObjectService.create(invalidData)).rejects.toThrow('Validation failed: Invalid');
         });
 
+        it('should throw error if name is not provided', async () => {
+            const invalidData = { code: 'Test' };
+            try {
+                await customDataObjectService.create(invalidData);
+            }
+            catch (error) {
+                expect(error.message).toBe('Validation failed on custom object');
+                expect(error.details[0].message).toBe('"name" is required');
+                expect(error.details[1].message).toBe('"attributes" is required');
+            }
+        });
+
         it('should create custom data object and attributes', async () => {
             const validData = { name: 'Test', code: "Test", description: 'N/A', attributes: [ValidAttributes.FirstNameAttribute] };
             /*console.log('Valid Data:', validData);*/

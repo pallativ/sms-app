@@ -44,11 +44,13 @@ class CustomDataObjectService {
     async create(data) {
         data.createdAt = new Date();
         data.updatedAt = new Date();
-        data.createdBy = 'system'; // Replace with actual user ID if available
-        data.updatedBy = 'system'; // Replace with actual user ID if available
+        data.createdBy = 'system'; // TODO: Replace with actual user ID if available
+        data.updatedBy = 'system'; // TODO: Replace with actual user ID if available
         const { error, value } = customDataObjectSchema.validate(data, { abortEarly: false });
         if (error) {
-            throw new Error(`Validation failed: ${error.details.map(x => x.message).join(', ')}`);
+            var validation_error = new Error(`Validation failed on custom object`);
+            validation_error.details = error.details;
+            throw validation_error;
         }
         var new_cdo = await customDataObjectRepository.create(value);
         if (value.attributes && value.attributes.length > 0) {
