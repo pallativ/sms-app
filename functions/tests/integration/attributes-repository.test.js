@@ -44,7 +44,7 @@ describe('Verify Attributes Repository', () => {
 
     test('getByName should retrieve the attribute by name', async () => {
         const found = await attributeRepository.getByName(newCdo.name, 'color');
-        console.log(found);
+        /*console.log(found);*/
         expect(found).not.toBeNull();
         expect(found.name).toBe('color');
     });
