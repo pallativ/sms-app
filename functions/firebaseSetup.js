@@ -25,7 +25,7 @@ if (!admin.apps.length) {
 
 const db = admin.firestore();
 const auth = admin.auth();
-logger.info('Database Id:', db.databaseId);
-logger.info(`Firestore initialized [Environment: ${useEmulator ? 'LOCAL' : 'PRODUCTION'}]`);
+//logger.info('Database Id:', db.databaseId);
+//logger.info(`Firestore initialized [Environment: ${useEmulator ? 'LOCAL' : 'PRODUCTION'}]`);
 
 module.exports = { db, auth, };
