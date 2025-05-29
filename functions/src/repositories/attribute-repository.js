@@ -17,6 +17,7 @@ class AttributeRepository {
 
     async getAll(custom_data_object_id) {
         const snapshot = await this.getCollection(custom_data_object_id).get();
+        if (snapshot.empty) return null;
         return snapshot.docs.map(doc => {
             /*console.log('Attribute:', doc.id, doc.data());*/
             return buildObjectFromDoc(doc, fields);

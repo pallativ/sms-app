@@ -93,4 +93,10 @@ describe('Verify Attributes Repository', () => {
         const all = await attributeRepository.getAll(newCdo.name);
         expect(all.some(a => ids.includes(a.id))).toBe(false);
     });
+
+    // should getAttributes should return null if there are no custom data object
+    test('getAttributes should return null if there are no custom data object', async () => {
+        const attributes = await attributeRepository.getAll('non-existing-cdo');
+        expect(attributes).toBeNull();
+    });
 });

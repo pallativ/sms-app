@@ -119,6 +119,50 @@ describe('CustomDataObjectService', () => {
     //    });
     //});
 
+    describe('getAll()', () => {
+        beforeAll(async () => {
+            await clearCDOsCollection();
+        });
+        // it should return all custom data objects
+        it('should return all custom data objects', async () => {
+            var omitFields = [ "id", "description", "createdAt", "updatedAt", "attributes"];
+            const mockObjects = [
+                { name: 'Test1', code: 'Test1', attributes: [ValidAttributes.FirstNameAttribute] },
+                { name: 'Test2', code: 'Test2', attributes: [ValidAttributes.FirstNameAttribute] }
+            ];
+            for (const item of mockObjects) {
+                var temp = await customDataObjectService.create(item);
+            }
+            const result = await customDataObjectService.getAll();
+            expect(_.omit(result.filter(item => item.name === "Test1")[0], omitFields)).toEqual(_.omit(mockObjects[0], omitFields));
+            expect(_.omit(result.filter(item => item.name === "Test2")[0], omitFields)).toEqual(_.omit(mockObjects[1], omitFields));
+            expect(result.length).toEqual(2);
+        });
+    });
+
+    describe('getByName()', () => {
+
+        // it should return null if the custom data object not exists
+        it('should getName return null if the cdo doesnt exists', async () => {
+            const invalidData = { name: 'Test' };
+            var custom_data_object = await customDataObjectService.getByName(invalidData);
+            expect(custom_data_object).toBeNull();
+        });
+
+        // it should return attributes if the flag is true
+        it('should getByName return attributes if the flag is true', async () => {
+            const validData = { name: 'Test', code: "Test", description: 'N/A', attributes: [ValidAttributes.FirstNameAttribute] };
+            var create_result = await customDataObjectService.create(validData);
+            var custom_data_object = await customDataObjectService.getByName(validData.name, true);
+            expect(custom_data_object).toBeDefined();
+            expect(custom_data_object.name).toBe('Test');
+            expect(custom_data_object.code).toBe('Test');
+            expect(custom_data_object.attributes).toBeDefined();
+            expect(custom_data_object.attributes[0].id).toBeDefined();
+            expect(_.omit(custom_data_object.attributes[0], ["id"])).toEqual(ValidAttributes.FirstNameAttribute);
+        });
+    })
+
     describe('create', () => {
         it('should throw error if validation fails', async () => {
             //const invalidData = {};
@@ -150,14 +194,6 @@ describe('CustomDataObjectService', () => {
             expect(result.code).toBe('Test');
             expect(result.attributes).toBeUndefined();
             expect(result.records).toBeUndefined();
-
-            var result = await customDataObjectService.getByName(validData.name, true);
-            expect(result).toBeDefined();
-            expect(result.name).toBe('Test');
-            expect(result.code).toBe('Test');
-            expect(result.attributes).toBeDefined();
-            expect(result.attributes[0].id).toBeDefined();
-            expect(_.omit(result.attributes[0], ["id"])).toEqual(ValidAttributes.FirstNameAttribute);
 
             /*expect(Array.isArray(validData.attributes) && validData.attributes.length > 0).toBe(true);*/
 

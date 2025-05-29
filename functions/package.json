@@ -3,6 +3,7 @@
     "description": "Cloud Functions for Firebase",
     "scripts": {
         "serve": "firebase emulators:start",
+        "start-store": "firebase emulators:start --only firestore",
         "shell": "firebase functions:shell",
         "start": "npm run shell",
         "deploy": "firebase deploy --only functions",

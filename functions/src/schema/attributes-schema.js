@@ -23,4 +23,12 @@ const attributesSchema = Joi.object({
         })
 });
 
+// Dynamic rendering of the UI based on the attribute type
+// Control trpe
+// Tooltip.
+// Custom validation function.
+// Visible If condition is met.
+
+
+
 module.exports = attributesSchema;
