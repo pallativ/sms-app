@@ -152,7 +152,7 @@ describe('CustomDataObjectService', () => {
         // it should return attributes if the flag is true
         it('should getByName return attributes if the flag is true', async () => {
             const validData = { name: 'Test', code: "Test", description: 'N/A', attributes: [ValidAttributes.FirstNameAttribute] };
-            var create_result = await customDataObjectService.create(validData);
+            await customDataObjectService.create(validData);
             var custom_data_object = await customDataObjectService.getByName(validData.name, true);
             expect(custom_data_object).toBeDefined();
             expect(custom_data_object.name).toBe('Test');
@@ -162,6 +162,31 @@ describe('CustomDataObjectService', () => {
             expect(_.omit(custom_data_object.attributes[0], ["id"])).toEqual(ValidAttributes.FirstNameAttribute);
         });
     })
+
+    describe("deleteAttributes", () => {
+        beforeAll(async () => {
+            await clearCDOsCollection();
+        });
+        // it should delete attributes by their names from a custom data object
+        it('should delete attributes by their names from a custom data object', async () => {
+            const validData = {
+                name: 'Test', code: "Test", description: 'N/A',
+                attributes: [ValidAttributes.FirstNameAttribute, ValidAttributes.LastNameAttribute]
+            };
+            await customDataObjectService.create(validData);
+            var custom_data_object = await customDataObjectService.getByName(validData.name, true);
+            expect(custom_data_object).toBeDefined();
+            expect(custom_data_object.attributes.length).toBe(2);
+            var firstNameAttribute = custom_data_object.attributes.filter(t => t.name === ValidAttributes.FirstNameAttribute.name)[0];
+            expect(firstNameAttribute.name).toBe('First Name');
+            // Now delete the attribute
+            await customDataObjectService.deleteAttributes(custom_data_object.id, [ValidAttributes.FirstNameAttribute.name]);
+            custom_data_object = await customDataObjectService.getByName(validData.name, true);
+            var lastNameAttribute = custom_data_object.attributes.filter(t => t.name === ValidAttributes.LastNameAttribute.name)[0];
+            expect(custom_data_object.attributes.length).toBe(1);
+            expect(lastNameAttribute.name).toBe('Last Name');
+        });
+    });
 
     describe('create', () => {
         it('should throw error if validation fails', async () => {

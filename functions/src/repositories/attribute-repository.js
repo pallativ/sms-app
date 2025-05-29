@@ -51,12 +51,14 @@ class AttributeRepository {
 
     async deleteMany(custom_data_object_id, ids) {
         const batch = db.batch();
+        var deleted_ids = [];
         ids.forEach(id => {
             const docRef = this.getCollection(custom_data_object_id).doc(id);
+            deleted_ids.push(docRef.id);
             batch.delete(docRef);
         });
         await batch.commit();
-        return ids;
+        return deleted_ids;
     }
 }
 
