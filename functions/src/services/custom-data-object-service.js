@@ -7,7 +7,7 @@ class CustomDataObjectService {
     async getAll() {
         return await customDataObjectRepository.getAll();
     }
- 
+
     async getByName(name, includeAttributes = false) {
         if (!name) {
             throw new Error('Name is required.');
@@ -65,7 +65,21 @@ class CustomDataObjectService {
         if (!id) {
             throw new Error('ID is required for deletion.');
         }
+        var attributeIds = await attributesRepository.getAll(id).then(attrs => attrs.map(attr => attr.id))
+        await attributesRepository.deleteMany(id, attributeIds);
         return await customDataObjectRepository.delete(id);
+    }
+
+    // deleteAttributes - Deletes attributes by their names from a custom data object.
+    async deleteAttributes(custom_data_object_id, attribute_names) {
+        if (!custom_data_object_id) {
+            throw new Error('custom_data_object_id is required for deleting attributes.');
+        }
+        var filtered_attributes  = await attributesRepository.getAll(custom_data_object_id)
+            .then(attrs => attrs.filter(attr =>
+                            attribute_names.some(name => name.trim().toLowerCase() === attr.name.trim().toLowerCase())));
+        var attribute_ids = filtered_attributes.map(t => t.id);
+        await attributesRepository.deleteMany(custom_data_object_id, attribute_ids);
     }
 
     async edit(custom_data_object_id, data) {
