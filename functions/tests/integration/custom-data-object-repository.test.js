@@ -91,5 +91,7 @@ describe('Custom Data Object Repository', () => {
 		expect(cdos.length).toBeGreaterThanOrEqual(2);
 		expect(cdos.some(cdo => cdo.name === 'CDO1')).toBe(true);
 		expect(cdos.some(cdo => cdo.name === 'CDO2')).toBe(true);
-	});
+    });
+
+    
 });

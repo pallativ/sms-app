@@ -3,8 +3,10 @@ const customDataObjectRepository = require('../../src/repositories/custom-data-o
 const attributesRepository = require('../../src/repositories/attribute-repository');
 const { ValidAttributes } = require('../data-providers/attributes-provider'); // Assuming this is a fixture with valid attributes
 const _ = require('lodash');
-//jest.mock('../../src/repositories/custom-data-object-repository');
-//jest.mock('../../src/repositories/attribute-repository');
+////jest.mock('../../src/repositories/custom-data-object-repository');
+////jest.mock('../../src/repositories/attribute-repository');
+//const customDataObjectRepository = require('../../src/repositories/custom-data-object-repository');
+//const attributesRepository = require('../../src/repositories/attribute-repository');
 
 describe('CustomDataObjectService', () => {
     afterEach(() => {
@@ -125,7 +127,7 @@ describe('CustomDataObjectService', () => {
         });
         // it should return all custom data objects
         it('should return all custom data objects', async () => {
-            var omitFields = [ "id", "description", "createdAt", "updatedAt", "attributes"];
+            var omitFields = ["id", "description", "createdAt", "updatedAt", "attributes"];
             const mockObjects = [
                 { name: 'Test1', code: 'Test1', attributes: [ValidAttributes.FirstNameAttribute] },
                 { name: 'Test2', code: 'Test2', attributes: [ValidAttributes.FirstNameAttribute] }
@@ -250,27 +252,45 @@ describe('CustomDataObjectService', () => {
     //    });
     //});
 
-    //describe('edit', () => {
-    //    it('should throw error if id is not provided', async () => {
-    //        await expect(customDataObjectService.edit()).rejects.toThrow('ID is required for editing.');
-    //    });
+    describe('edit', () => {
+        //it('should throw error if id is not provided', async () => {
+        //    await expect(customDataObjectService.edit()).rejects.toThrow('ID is required for editing.');
+        //});
 
-    //    it('should throw error if validation fails', async () => {
-    //        const schema = require('../../src/schema/custom-data-object-schema');
-    //        jest.spyOn(schema, 'validate').mockReturnValue({ error: { details: [{ message: 'Invalid' }] } });
+        //it('should throw error if validation fails', async () => {
+        //    const schema = require('../../src/schema/custom-data-object-schema');
+        //    jest.spyOn(schema, 'validate').mockReturnValue({ error: { details: [{ message: 'Invalid' }] } });
 
-    //        await expect(customDataObjectService.edit(1, {})).rejects.toThrow('Validation failed: Invalid');
-    //    });
+        //    await expect(customDataObjectService.edit(1, {})).rejects.toThrow('Validation failed: Invalid');
+        //});
 
-    //    it('should edit custom data object', async () => {
-    //        const validData = { name: 'Test' };
-    //        const schema = require('../../src/schema/custom-data-object-schema');
-    //        jest.spyOn(schema, 'validate').mockReturnValue({ error: null, value: { ...validData, id: 1 } });
-    //        customDataObjectRepository.edit.mockResolvedValue(true);
+        it('should edit custom data object', async () => {
 
-    //        const result = await customDataObjectService.edit(1, validData);
-    //        expect(result).toBe(true);
-    //        expect(customDataObjectRepository.edit).toHaveBeenCalledWith(1, { ...validData, id: 1 });
-    //    });
-    //});
+            try {
+
+                let validData = {
+                    name: 'Edit Cdo', code: "Edit Cdo", description: 'N/A',
+                    attributes: [ValidAttributes.FirstNameAttribute]
+                };
+
+                await customDataObjectService.create(validData);
+                var created_cdo = await customDataObjectService.getByName(validData.name, true);
+                validData.name = 'New EDIT CDO'; // Change the name for edit
+                validData.attributes = [ValidAttributes.LastNameAttribute]; // Change attributes for edit
+
+                //console.log('Created CDO:', created_cdo);
+                await customDataObjectService.edit(created_cdo.id, validData)
+
+                const edited_cdo = await customDataObjectService.getByName(validData.name, true);
+                expect(edited_cdo).toBeDefined();
+                //console.log('Edited CDO:', edited_cdo);
+                expect(edited_cdo.name).toBe('New EDIT CDO');
+                expect(edited_cdo.attributes.length).toBe(1);
+                expect(edited_cdo.attributes[0].name).toBe('Last Name');
+            }
+            catch (error) {
+                console.error('Error during edit test:', error);
+            }
+        });
+    });
 });

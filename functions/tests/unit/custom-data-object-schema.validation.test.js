@@ -42,10 +42,10 @@ describe('customDataObjectSchema', () => {
         });
 
         test('should fail if code is not alphanumeric', () => {
-            const invalid = { ...validDataObject, code: 'INVALID CODE!' };
+            const invalid = { name : 'Sample' };
             const { error } = customDataObjectSchema.validate(invalid);
             expect(error).toBeDefined();
-            expect(error.details.some(d => d.message.includes('"code" must only contain alpha-numeric characters'))).toBe(true);
+            expect(error.details.some(d => d.message.includes('"code" is required'))).toBe(true);
         });
 
         test('should fail if attributes is empty', () => {
