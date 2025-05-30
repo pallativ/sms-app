@@ -238,32 +238,24 @@ describe('CustomDataObjectService', () => {
         });
     });
 
-    //describe('delete', () => {
-    //    it('should throw error if id is not provided', async () => {
-    //        await expect(customDataObjectService.delete()).rejects.toThrow('ID is required for deletion.');
-    //    });
+    describe('delete', () => {
 
-    //    it('should delete custom data object', async () => {
-    //        customDataObjectRepository.delete.mockResolvedValue(true);
+        it('should delete custom data object', async () => {
+            let validData = {
+                name: 'Edit Cdo', code: "Edit Cdo", description: 'N/A',
+                attributes: [ValidAttributes.FirstNameAttribute]
+            };
+            await customDataObjectService.create(validData);
+            var created_cdo = await customDataObjectService.getByName(validData.name);
+            expect(created_cdo.name).toEqual(validData.name);
 
-    //        const result = await customDataObjectService.delete(1);
-    //        expect(result).toBe(true);
-    //        expect(customDataObjectRepository.delete).toHaveBeenCalledWith(1);
-    //    });
-    //});
+            await customDataObjectService.delete(created_cdo.id);
+            var after_cdo = await customDataObjectService.getByName(validData.name);
+            expect(after_cdo).toBeNull();
+        });
+    });
 
     describe('edit', () => {
-        //it('should throw error if id is not provided', async () => {
-        //    await expect(customDataObjectService.edit()).rejects.toThrow('ID is required for editing.');
-        //});
-
-        //it('should throw error if validation fails', async () => {
-        //    const schema = require('../../src/schema/custom-data-object-schema');
-        //    jest.spyOn(schema, 'validate').mockReturnValue({ error: { details: [{ message: 'Invalid' }] } });
-
-        //    await expect(customDataObjectService.edit(1, {})).rejects.toThrow('Validation failed: Invalid');
-        //});
-
         it('should edit custom data object', async () => {
 
             try {
@@ -276,6 +268,7 @@ describe('CustomDataObjectService', () => {
                 await customDataObjectService.create(validData);
                 var created_cdo = await customDataObjectService.getByName(validData.name, true);
                 validData.name = 'New EDIT CDO'; // Change the name for edit
+                validData.description = 'New Description'; // Change description for edit
                 validData.attributes = [ValidAttributes.LastNameAttribute]; // Change attributes for edit
 
                 //console.log('Created CDO:', created_cdo);
@@ -283,8 +276,10 @@ describe('CustomDataObjectService', () => {
 
                 const edited_cdo = await customDataObjectService.getByName(validData.name, true);
                 expect(edited_cdo).toBeDefined();
+                expect(edited_cdo.id).toBe(created_cdo.id);
                 //console.log('Edited CDO:', edited_cdo);
                 expect(edited_cdo.name).toBe('New EDIT CDO');
+                expect(edited_cdo.description).toBe(validData.description);
                 expect(edited_cdo.attributes.length).toBe(1);
                 expect(edited_cdo.attributes[0].name).toBe('Last Name');
             }
