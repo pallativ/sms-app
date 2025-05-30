@@ -67,12 +67,14 @@ describe('CustomDataObjectRecordsRepository', () => {
     test('createMultiple should add multiple records', async () => {
         const records = [
             { data: { a: 1 }, createdBy: 'u', updatedBy: 'u', createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
-            { data: { b: 2 }, createdBy: 'u', updatedBy: 'u', createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() }
+            { data: { b: 2 }, createdBy: 'u', updatedBy: 'u', createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+            { data: { b: 3 }, createdBy: 'u', updatedBy: 'u', createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() }
         ];
         const results = await repository.createMultiple(TEST_COLLECTION_ID, records);
-        expect(results.length).toBe(2);
+        expect(results.length).toBe(3);
         expect(results[0].data).toEqual(records[0].data);
         expect(results[1].data).toEqual(records[1].data);
+        expect(results[2].data).toEqual(records[2].data);
     });
 
     test('deleteMany should remove multiple records', async () => {
