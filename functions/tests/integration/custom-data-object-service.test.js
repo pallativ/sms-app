@@ -249,6 +249,7 @@ describe('CustomDataObjectService', () => {
             var created_cdo = await customDataObjectService.getByName(validData.name);
             expect(created_cdo.name).toEqual(validData.name);
 
+            /*console.log(created_cdo.id);*/
             await customDataObjectService.delete(created_cdo.id);
             var after_cdo = await customDataObjectService.getByName(validData.name);
             expect(after_cdo).toBeNull();
