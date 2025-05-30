@@ -1,12 +1,8 @@
 const customDataObjectService = require('../../src/services/custom-data-object-service');
 const customDataObjectRepository = require('../../src/repositories/custom-data-object-repository');
-const attributesRepository = require('../../src/repositories/attribute-repository');
 const { ValidAttributes } = require('../data-providers/attributes-provider'); // Assuming this is a fixture with valid attributes
 const _ = require('lodash');
-////jest.mock('../../src/repositories/custom-data-object-repository');
-////jest.mock('../../src/repositories/attribute-repository');
-//const customDataObjectRepository = require('../../src/repositories/custom-data-object-repository');
-//const attributesRepository = require('../../src/repositories/attribute-repository');
+
 
 describe('CustomDataObjectService', () => {
     afterEach(() => {
@@ -23,103 +19,6 @@ describe('CustomDataObjectService', () => {
             await customDataObjectRepository.delete(item.id);
         };
     }
-
-    //describe('getAll', () => {
-    //    it('should return all custom data objects', async () => {
-    //        const mockObjects = [{ id: 1 }, { id: 2 }];
-    //        customDataObjectRepository.getAll.mockResolvedValue(mockObjects);
-
-    //        const result = await customDataObjectService.getAll();
-    //        expect(result).toEqual(mockObjects);
-    //        expect(customDataObjectRepository.getAll).toHaveBeenCalled();
-    //    });
-    //});
-
-    //describe('getByName', () => {
-    //    it('should throw error if name is not provided', async () => {
-    //        await expect(customDataObjectService.getByName()).rejects.toThrow('Name is required.');
-    //    });
-
-    //    it('should return custom data object with attributes if includeAttributes is true', async () => {
-    //        const mockObject = { id: 1, name: 'Test' };
-    //        const mockAttributes = [{ id: 10 }];
-    //        customDataObjectRepository.getByName.mockResolvedValue(mockObject);
-    //        attributesRepository.getAll.mockResolvedValue(mockAttributes);
-
-    //        // Patch the method to return the object for test (since original code has a bug)
-    //        const service = require('../../src/services/custom-data-object-service');
-    //        service.getByName = jest.fn(async (name, includeAttributes = false) => {
-    //            if (!name) throw new Error('Name is required.');
-    //            const obj = await customDataObjectRepository.getByName(name);
-    //            obj.attributes = includeAttributes ? await attributesRepository.getAll(obj.id) : undefined;
-    //            return obj;
-    //        });
-
-    //        const result = await service.getByName('Test', true);
-    //        expect(result).toEqual({ id: 1, name: 'Test', attributes: mockAttributes });
-    //    });
-
-    //    it('should return custom data object without attributes if includeAttributes is false', async () => {
-    //        const mockObject = { id: 1, name: 'Test' };
-    //        customDataObjectRepository.getByName.mockResolvedValue(mockObject);
-
-    //        const service = require('../../src/services/custom-data-object-service');
-    //        service.getByName = jest.fn(async (name, includeAttributes = false) => {
-    //            if (!name) throw new Error('Name is required.');
-    //            const obj = await customDataObjectRepository.getByName(name);
-    //            obj.attributes = includeAttributes ? await attributesRepository.getAll(obj.id) : undefined;
-    //            return obj;
-    //        });
-
-    //        const result = await service.getByName('Test', false);
-    //        expect(result).toEqual({ id: 1, name: 'Test', attributes: undefined });
-    //    });
-    //});
-
-    //describe('getAttributes', () => {
-    //    it('should throw error if custom_object_id is not provided', async () => {
-    //        await expect(customDataObjectService.getAttributes()).rejects.toThrow('ID is required to get attributes.');
-    //    });
-
-    //    it('should return attributes', async () => {
-    //        const mockAttributes = [{ id: 1 }];
-    //        attributesRepository.getAll.mockResolvedValue(mockAttributes);
-
-    //        const result = await customDataObjectService.getAttributes(1);
-    //        expect(result).toEqual(mockAttributes);
-    //        expect(attributesRepository.getAll).toHaveBeenCalled();
-    //    });
-    //});
-
-    //describe('getRecords', () => {
-    //    it('should throw error if id is not provided', async () => {
-    //        await expect(customDataObjectService.getRecords()).rejects.toThrow('ID is required to get records.');
-    //    });
-
-    //    it('should return records', async () => {
-    //        const mockRecords = [{ id: 1 }];
-    //        customDataObjectRepository.getRecords.mockResolvedValue(mockRecords);
-
-    //        const result = await customDataObjectService.getRecords(1);
-    //        expect(result).toEqual(mockRecords);
-    //        expect(customDataObjectRepository.getRecords).toHaveBeenCalledWith(1);
-    //    });
-    //});
-
-    //describe('searchByName', () => {
-    //    it('should throw error if name is not provided', async () => {
-    //        await expect(customDataObjectService.searchByName()).rejects.toThrow('Name is required for searching.');
-    //    });
-
-    //    it('should return search results', async () => {
-    //        const mockResults = [{ id: 1 }];
-    //        customDataObjectRepository.searchByName.mockResolvedValue(mockResults);
-
-    //        const result = await customDataObjectService.searchByName('Test');
-    //        expect(result).toEqual(mockResults);
-    //        expect(customDataObjectRepository.searchByName).toHaveBeenCalledWith('Test');
-    //    });
-    //});
 
     describe('getAll()', () => {
         beforeAll(async () => {

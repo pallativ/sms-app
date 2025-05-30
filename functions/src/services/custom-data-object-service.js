@@ -36,6 +36,19 @@ class CustomDataObjectService {
         return await customDataObjectRepository.getRecords(id);
     }
 
+    async importRecords(records) {
+        for (let i = 0; i < records.length; i += MAX_BATCH_SIZE) {
+            const chunk = records.slice(i, i + MAX_BATCH_SIZE);
+            const batch = db.batch();
+            chunk.forEach(data => {
+                const docRef = db.collection('users').doc(data.id);
+                batch.set(docRef, data);
+            });
+            await batch.commit();
+            console.log(`Committed batch ${i / MAX_BATCH_SIZE + 1}`);
+        }
+    }
+
     async searchByName(name) {
         if (!name) {
             throw new Error('Name is required for searching.');
