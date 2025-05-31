@@ -1,9 +1,11 @@
 const attributeRepository = require('../../src/repositories/attribute-repository');
+const AttributeRepository = require('../../src/repositories/attribute-repository');
 const customDataObjectRepository = require('../../src/repositories/custom-data-object-repository');
 
 
 jest.setTimeout(10000);
 describe('Verify Attributes Repository', () => {
+    let attributeRepository = new AttributeRepository();
     const validAttribute = {
         code: "firstName",
         order: 1,

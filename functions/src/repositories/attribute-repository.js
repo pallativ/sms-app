@@ -64,4 +64,4 @@ class AttributeRepository {
     }
 }
 
-module.exports = new AttributeRepository();
+module.exports = AttributeRepository;
