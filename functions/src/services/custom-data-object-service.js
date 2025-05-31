@@ -1,8 +1,9 @@
 const customDataObjectRepository = require('../repositories/custom-data-object-repository');
 const attributesRepository = require('../repositories/attribute-repository');
+const customDataObjectRecordsRepository = require("../repositories/custom-data-object-records-repository")
 const customDataObjectSchema = require('../schema/custom-data-object-schema');
 const { logger } = require('firebase-functions');
-
+const MAX_BATCH_SIZE = 500;
 class CustomDataObjectService {
     async getAll() {
         return await customDataObjectRepository.getAll();
@@ -39,13 +40,7 @@ class CustomDataObjectService {
     async importRecords(records) {
         for (let i = 0; i < records.length; i += MAX_BATCH_SIZE) {
             const chunk = records.slice(i, i + MAX_BATCH_SIZE);
-            const batch = db.batch();
-            chunk.forEach(data => {
-                const docRef = db.collection('users').doc(data.id);
-                batch.set(docRef, data);
-            });
-            await batch.commit();
-            console.log(`Committed batch ${i / MAX_BATCH_SIZE + 1}`);
+            customDataObjectRecordsRepository.createMultiple(chunk);
         }
     }
 
