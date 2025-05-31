@@ -44,6 +44,23 @@ class CustomDataObjectService {
         }
     }
 
+    async validateRecords(schema, records) {
+        var validation_result = { is_valid: true, errors: [] };
+        for (let i = 0; i < records.length; i++) {
+            const { error } = schema.validate(records[i]);
+            if (error !== undefined)
+                validation_result.is_valid = false;
+            var record_error = {
+                record_num: i,
+                is_valid: error === undefined,
+            };
+            if (error !== undefined)
+                record_error.errors = error.details;
+            validation_result.errors.push(record_error);
+        }
+        return validation_result;
+    }
+
     async searchByName(name) {
         if (!name) {
             throw new Error('Name is required for searching.');
