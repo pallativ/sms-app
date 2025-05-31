@@ -9,8 +9,9 @@ const optionSchema = Joi.object({
 // Define a validation schema using Joi
 const attributesSchema = Joi.object({
     name: Joi.string().required().max(30),
-    code: Joi.string().alphanum().required().max(100),
+    code: Joi.string().required().max(100),
     type: Joi.string().valid('string', 'number', 'boolean', 'date', 'enum').required(),
+    help_text: Joi.string().max(500).default(''),
     required: Joi.boolean().default(false).required(),
     order: Joi.number().integer().min(0).required(),
     default: Joi.any(),

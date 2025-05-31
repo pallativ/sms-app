@@ -8,7 +8,7 @@ class DynamicSchemaBuilder {
         const schemaMap = {};
 
         fieldList.forEach(field => {
-            const { name, type, required, multiple, options, default_value } = field;
+            const { name, code, type, required, multiple, options, default_value } = field;
             let joiField = this.getFieldType(type, options, multiple);
 
             // Add required behaviour.
@@ -19,7 +19,8 @@ class DynamicSchemaBuilder {
                 joiField = joiField.default(default_value);
             }
 
-            schemaMap[name] = joiField;
+
+            schemaMap[code] = joiField;
         });
 
         return Joi.object(schemaMap);

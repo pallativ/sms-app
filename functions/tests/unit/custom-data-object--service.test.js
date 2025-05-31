@@ -1,6 +1,7 @@
 const customDataObjectService = require('../../src/services/custom-data-object-service');
 const customDataObjectRecordsRepository = require('../../src/repositories/custom-data-object-records-repository');
 const Joi = require('joi');
+const { ValidAttributes } = require('../data-providers/attributes-provider');
 jest.mock('../../src/repositories/custom-data-object-records-repository', () => ({
     createMultiple: jest.fn()
 }));
@@ -102,6 +103,99 @@ describe('CustomDataObjectService.validateRecords', () => {
         });
         const result = await customDataObjectService.validateRecords(schema, [validRecord]);
         expect(result.is_valid).toBe(true);
-        expect(result.errors).toEqual([{is_valid: true, record_num: 0}]);
+        expect(result.errors).toEqual([{ is_valid: true, record_num: 0 }]);
     });
+});
+
+describe('CustomDataObjectService.validateAgainstCutomDataObject', () => {
+    const customDataObjectService = require('../../src/services/custom-data-object-service');
+
+    const schema = require('joi').object({
+        name: Joi.string().max(100).required(),
+        description: Joi.string().max(1000).required()
+    });
+
+    const validCustomDataObjectRecord = {
+        id: '1', // Assuming id is required for the record
+        name: 'Test',
+        code: 'Sample',
+        description: 'desc',
+        attributes: [
+            ValidAttributes.FirstNameAttribute,
+            ValidAttributes.LastNameAttribute,
+            ValidAttributes.EmailAttribute,
+            ValidAttributes.MobileAttribute
+        ]
+    };
+    const valid_record = {
+        "First Name": "Veera",
+        "Last Name": "Pallati",
+        "Email": "pkondalu@gmail.com",
+        "Mobile": "9000180459",
+    };
+    const invalid_record = {
+        "First Name": "Veera",
+        "Email": "pkondalu@gmail.com",
+        "Mobile": "9000180459",
+    };
+    const records = [valid_record];
+    let validateRecordSpy = {};
+    let importRecordsSpy = {};
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
+
+
+    it('should call getByName with the correct object name', async () => {
+        jest.spyOn(customDataObjectService, 'getByName').mockImplementation(() => validCustomDataObjectRecord);
+        validateRecordSpy = jest.spyOn(customDataObjectService, 'validateRecords').mockImplementation((schema, records) => {
+            return { is_valid: true }
+        });
+        importRecordsSpy = jest.spyOn(customDataObjectService, 'importRecords').mockImplementation((records) => {
+            //console.log('Importing records:', records);
+            return true;
+        });
+        await customDataObjectService.validateAgainstCustomDataObjectSchema('TestObject', records);
+        expect(customDataObjectService.getByName).toHaveBeenCalledWith('TestObject', true);
+        expect(customDataObjectService.validateRecords).toHaveBeenCalledWith(expect.anything(), records);
+        expect(customDataObjectService.importRecords).toHaveBeenCalledWith(records);
+    });
+
+    //it('should return is_valid true for all valid records', async () => {
+    //    const records = [valid_record, valid_record];
+    //    jest.spyOn(customDataObjectService, 'getByName').mockImplementation(() => validCustomDataObjectRecord);
+    //    await customDataObjectService.validateAgainstCustomDataObjectSchema('TestObject', records);
+    //    expect(customDataObjectService.getByName).toHaveBeenCalledWith('TestObject', true);
+    //    expect(customDataObjectService.validateRecords).toHaveBeenCalledWith(expect.anything(), records);
+    //});
+
+    it('should return is_valid false and errors for invalid records', async () => {
+        validateRecordSpy.mockRestore();
+        importRecordsSpy.mockRestore();
+        const records = [valid_record, invalid_record];
+        jest.spyOn(customDataObjectService, 'getByName').mockImplementation((name, attribute) => validCustomDataObjectRecord);
+        jest.spyOn(customDataObjectService, 'importRecords').mockImplementation((records) => {
+            //console.log('Importing records:', records);
+            return;
+        });
+
+        await customDataObjectService.validateAgainstCustomDataObjectSchema('TestObject', records);
+        expect(customDataObjectService.getByName).toHaveBeenCalledWith('TestObject', true);
+        expect(customDataObjectService.importRecords).not.toHaveBeenCalled();
+    });
+
+    //it('should return is_valid true and empty errors for empty input', async () => {
+    //    customDataObjectRepository.getByName.mockResolvedValue({ schema });
+    //    const result = await customDataObjectService.validateAgainstCustomDataObjectSchema('TestObject', []);
+    //    expect(result.is_valid).toBe(true);
+    //    expect(result.errors).toEqual([]);
+    //});
+
+    //it('should throw if getByName returns null', async () => {
+    //    customDataObjectRepository.getByName.mockResolvedValue(null);
+    //    await expect(customDataObjectService.validateAgainstCustomDataObjectSchema('UnknownObject', [validRecord]))
+    //        .rejects
+    //        .toThrow();
+    //});
 });

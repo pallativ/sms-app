@@ -12,7 +12,7 @@ describe('DynamicSchemaBuilder', () => {
         test('Create Schema and validate - String', () => {
             // sample input representing a dynamic schema configuration
             const fields = [
-                { name: 'UserName', type: 'string', required: true, multiple: false, default_value: 'Veera' },
+                { name: 'UserName', code: 'UserName', type: 'string', required: true, multiple: false, default_value: 'Veera' },
             ];
 
             const schema = builder.buildSchema(fields);
@@ -26,7 +26,7 @@ describe('DynamicSchemaBuilder', () => {
         test('Create Schema and validate - String & Default Value', () => {
             // sample input representing a dynamic schema configuration
             const fields = [
-                { name: 'UserName', type: 'string', required: false, multiple: false, default_value: 'Veera' },
+                { name: 'UserName', code: 'UserName',  type: 'string', required: false, multiple: false, default_value: 'Veera' },
             ];
 
             const schema = builder.buildSchema(fields);
@@ -43,6 +43,7 @@ describe('DynamicSchemaBuilder', () => {
             const fields = [
                 {
                     name: 'sex',
+                    code: 'sex',
                     type: 'enum',
                     required: false,
                     multiple: false,
@@ -86,7 +87,7 @@ describe('DynamicSchemaBuilder', () => {
     describe('Building schema for number types.', () => {
         test('Create Schema and validate - Number', () => {
             const fields = [
-                { name: 'age', type: 'number', required: true, multiple: false },
+                { name: 'age', code: 'age', type: 'number', required: true, multiple: false },
             ];
 
             const schema = builder.buildSchema(fields);
@@ -103,7 +104,7 @@ describe('DynamicSchemaBuilder', () => {
 
         test('Create Schema and validate - Number & Default Value', () => {
             const fields = [
-                { name: 'age', type: 'number', required: false, multiple: false, default_value: 25 },
+                { name: 'age', code: 'age', type: 'number', required: false, multiple: false, default_value: 25 },
             ];
 
             const schema = builder.buildSchema(fields);
@@ -119,7 +120,7 @@ describe('DynamicSchemaBuilder', () => {
     describe('Building schema for boolean types.', () => {
         test('Create Schema and validate - Boolean', () => {
             const fields = [
-                { name: 'isActive', type: 'boolean', required: true, multiple: false },
+                { name: 'isActive', code: 'isActive',  type: 'boolean', required: true, multiple: false },
             ];
 
             const schema = builder.buildSchema(fields);
@@ -137,7 +138,7 @@ describe('DynamicSchemaBuilder', () => {
 
         test('Create Schema and validate - Boolean & Default Value', () => {
             const fields = [
-                { name: 'isActive', type: 'boolean', required: false, multiple: false, default_value: true },
+                { name: 'isActive', code: 'isActive', type: 'boolean', required: false, multiple: false, default_value: true },
             ];
 
             const schema = builder.buildSchema(fields);
@@ -158,7 +159,7 @@ describe('DynamicSchemaBuilder', () => {
     describe('Building schema for date types.', () => {
         test('Create Schema and validate - Date', () => {
             const fields = [
-                { name: 'createdAt', type: 'date', required: true, multiple: false }
+                { name: 'createdAt', code: 'createdAt', type: 'date', required: true, multiple: false }
             ];
 
             const schema = builder.buildSchema(fields);
@@ -186,7 +187,7 @@ describe('DynamicSchemaBuilder', () => {
         test('Create Schema and validate - Date & Default Value', () => {
             const defaultDate = new Date('2022-12-31');
             const fields = [
-                { name: 'createdAt', type: 'date', required: false, multiple: false, default_value: defaultDate }
+                { name: 'createdAt', code: 'createdAt', type: 'date', required: false, multiple: false, default_value: defaultDate }
             ];
 
             const schema = builder.buildSchema(fields);
@@ -211,7 +212,7 @@ describe('DynamicSchemaBuilder', () => {
     describe('Building schema for email types.', () => {
         test('Create Schema and validate - Email', () => {
             const fields = [
-                { name: 'email', type: 'email', required: true, multiple: false }
+                { name: 'email', code: 'email', type: 'email', required: true, multiple: false }
             ];
             const schema = builder.buildSchema(fields);
             // Valid email
@@ -236,7 +237,7 @@ describe('DynamicSchemaBuilder', () => {
         test('Create Schema and validate - Email & Default Value', () => {
             const fields = [
                 {
-                    name: 'email', type: 'email', required: false, multiple: false, default_value: 'abc@gmail.com'
+                    name: 'email', code: 'email', type: 'email', required: false, multiple: false, default_value: 'abc@gmail.com'
                 }
             ];
             const schema = builder.buildSchema(fields);
@@ -260,6 +261,7 @@ describe('DynamicSchemaBuilder', () => {
         let schema;
         const fields = [{
             name: 'status',
+            code: 'status',
             type: 'enum',
             required: true,
             multiple: false,
@@ -309,6 +311,7 @@ describe('DynamicSchemaBuilder', () => {
         test("Verify multiple enum values", () => {
             const fields = [{
                 name: 'status',
+                code: 'status',
                 type: 'enum',
                 required: true,
                 multiple: true,
@@ -338,11 +341,11 @@ describe('DynamicSchemaBuilder', () => {
     describe("Building schema for multiple types", () => {
         test("Verify multiple types", () => {
             const fields = [
-                { name: 'age', type: 'number', required: true, multiple: false },
-                { name: 'isActive', type: 'boolean', required: true, multiple: false },
-                { name: 'createdAt', type: 'date', required: true, multiple: false },
-                { name: 'email', type: 'email', required: true, multiple: false, default_value: 'abc@gmail.com' },
-                { name: 'status', type: 'enum', required: false, multiple: false, options: [{ label: 'Active', value: 'active' }, { label: 'Inactive', value: 'inactive' }], default_value: 'active' }
+                { name: 'age', code: 'age', type: 'number', required: true, multiple: false },
+                { name: 'isActive', code: 'isActive', type: 'boolean', required: true, multiple: false },
+                { name: 'createdAt', code: 'createdAt', type: 'date', required: true, multiple: false },
+                { name: 'email', code: 'email', type: 'email', required: true, multiple: false, default_value: 'abc@gmail.com' },
+                { name: 'status', code: 'status', type: 'enum', required: false, multiple: false, options: [{ label: 'Active', value: 'active' }, { label: 'Inactive', value: 'inactive' }], default_value: 'active' }
             ];
 
             // Test with all required fields

@@ -7,7 +7,8 @@ describe('customDataObjectSchema', () => {
         name: 'Attribute Name',
         type: 'string',
         multiselect: false,
-        required: true
+        required: true,
+        help_text: 'This is a test object for validation purposes',
     };
 
     const validDataObject = {

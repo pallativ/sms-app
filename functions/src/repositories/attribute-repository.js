@@ -5,6 +5,8 @@ const fields = ["id", "name", "code", "type", "required", "order", "default", "m
 class AttributeRepository {
     constructor() {
     }
+
+
     getCollection(custom_data_object_id) {
         return db.collection('custom-data-objects').doc(custom_data_object_id).collection('attributes');
     }

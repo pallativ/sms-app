@@ -3,6 +3,8 @@ const attributesRepository = require('../repositories/attribute-repository');
 const customDataObjectRecordsRepository = require("../repositories/custom-data-object-records-repository")
 const customDataObjectSchema = require('../schema/custom-data-object-schema');
 const { logger } = require('firebase-functions');
+const DynamicSchemaBuilder = require('../schema/dynamic-schema-builder');
+
 const MAX_BATCH_SIZE = 500;
 class CustomDataObjectService {
     async getAll() {
@@ -38,9 +40,12 @@ class CustomDataObjectService {
     }
 
     async importRecords(records) {
+        /*console.log('Importing records:', records.length);*/
         for (let i = 0; i < records.length; i += MAX_BATCH_SIZE) {
             const chunk = records.slice(i, i + MAX_BATCH_SIZE);
-            customDataObjectRecordsRepository.createMultiple(chunk);
+            //console.log(`Processing chunk from ${i} to ${i + chunk.length - 1}`);
+            //console.log('Chunk size:', chunk.length);
+            await customDataObjectRecordsRepository.createMultiple(chunk);
         }
     }
 
@@ -48,6 +53,7 @@ class CustomDataObjectService {
         var validation_result = { is_valid: true, errors: [] };
         for (let i = 0; i < records.length; i++) {
             const { error } = schema.validate(records[i]);
+            //console.log(`Validating record ${i + 1}/${records.length}:`, records[i]);
             if (error !== undefined)
                 validation_result.is_valid = false;
             var record_error = {
@@ -59,6 +65,24 @@ class CustomDataObjectService {
             validation_result.errors.push(record_error);
         }
         return validation_result;
+    }
+
+    async validateAgainstCustomDataObjectSchema(custom_data_object_name, records) {
+        var custom_data_object = await this.getByName(custom_data_object_name, true);
+        //console.log('Schema built for custom data object:', custom_data_object);
+        if (custom_data_object) {
+            var builder = new DynamicSchemaBuilder();
+            // Build Schema from the attributes of the custom data object
+           
+            var schema = builder.buildSchema(custom_data_object.attributes);
+            
+            // Validate the records against the schema
+            var result = await this.validateRecords(schema, records);
+            if (result.is_valid) {
+                // If valid, import the records
+                await this.importRecords(records);
+            }
+        }
     }
 
     async searchByName(name) {
