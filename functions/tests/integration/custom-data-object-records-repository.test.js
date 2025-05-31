@@ -1,10 +1,10 @@
-const repository = require('../../src/repositories/custom-data-object-records-repository');
+const CustomDataObjectRecordsRepository = require('../../src/repositories/custom-data-object-records-repository');
 const { db } = require('../../firebaseSetup');
 const { ValidAttributes } = require('../data-providers/attributes-provider');
 
 const TEST_COLLECTION_ID = 'records';
 let createdRecordId;
-
+let repository = new CustomDataObjectRecordsRepository({ tenantCode: 'Home Tutions' });
 describe('CustomDataObjectRecordsRepository', () => {
     const testRecord = {
         data: { foo: 'bar' },

@@ -1,14 +1,17 @@
 const { db } = require('../../firebaseSetup');
 const { buildObjectFromDoc } = require('../utils/object-extensions');
+const TenantBaseRepository = require('./tenant-base-repository'); // Assuming this is the base repository class
 const fields = ["id", "name", "code", "type", "required", "order", "default", "multiselect", "updatedBy"];
 
-class AttributeRepository {
-    constructor() {
+class AttributeRepository extends TenantBaseRepository {
+    constructor(tenantContext) {
+        super(tenantContext); // Call the parent constructor if needed
+        this.tenantContext = tenantContext; // Store tenant context if needed
     }
 
 
     getCollection(custom_data_object_id) {
-        return db.collection('custom-data-objects').doc(custom_data_object_id).collection('attributes');
+        return this.getTenant().collection('custom-data-objects').doc(custom_data_object_id).collection('attributes');
     }
 
     async getByName(custom_data_object_id, name) {

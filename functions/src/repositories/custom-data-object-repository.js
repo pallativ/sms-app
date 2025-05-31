@@ -1,9 +1,11 @@
 const { db } = require('../../firebaseSetup');
 const _ = require('lodash');
 const { buildObjectFromDoc } = require('../utils/object-extensions');
+const TenantBaseRepository = require('./tenant-base-repository');
 const fields = ["id", "name", "code", "description", "attributes", "createdAt", "updatedAt", "createdBy", "updatedBy" ];
-class CustomDataObjectRepository {
-    constructor() {
+class CustomDataObjectRepository extends TenantBaseRepository {
+    constructor(tenantContext) {
+        super(tenantContext); // Call the parent constructor if needed
         this.collection = db.collection("custom-data-objects");
     }
 
@@ -36,4 +38,4 @@ class CustomDataObjectRepository {
     }
 }
 
-module.exports = new CustomDataObjectRepository();
+module.exports = CustomDataObjectRepository;

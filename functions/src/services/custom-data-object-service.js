@@ -1,24 +1,29 @@
-const customDataObjectRepository = require('../repositories/custom-data-object-repository');
+const CustomDataObjectRepository = require('../repositories/custom-data-object-repository');
 const AttributesRepository = require('../repositories/attribute-repository');
-const customDataObjectRecordsRepository = require("../repositories/custom-data-object-records-repository")
+const CustomDataObjectRecordsRepository = require("../repositories/custom-data-object-records-repository")
 const customDataObjectSchema = require('../schema/custom-data-object-schema');
 const { logger } = require('firebase-functions');
 const DynamicSchemaBuilder = require('../schema/dynamic-schema-builder');
 
 const MAX_BATCH_SIZE = 500;
 class CustomDataObjectService {
-    constructor() {
-        this.attributesRepository = new AttributesRepository();
+    constructor(tenantContext, customDataObjectRecordsRepository = null) {
+        this.attributesRepository = new AttributesRepository(tenantContext);
+        this.customDataObjectRepository = new CustomDataObjectRepository(tenantContext);
+        if (customDataObjectRecordsRepository === null)
+            this.customDataObjectRecordsRepository = new CustomDataObjectRecordsRepository(tenantContext);
+        else
+            this.customDataObjectRecordsRepository = customDataObjectRecordsRepository;
     }
     async getAll() {
-        return await customDataObjectRepository.getAll();
+        return await this.customDataObjectRepository.getAll();
     }
 
     async getByName(name, includeAttributes = false) {
         if (!name) {
             throw new Error('Name is required.');
         }
-        var custom_data_object = await customDataObjectRepository.getByName(name);
+        var custom_data_object = await this.customDataObjectRepository.getByName(name);
         if (custom_data_object.length > 0) {
             custom_data_object = { ...custom_data_object[0] }
             custom_data_object.attributes = includeAttributes ? await this.attributesRepository.getAll(custom_data_object.id) : undefined;
@@ -48,7 +53,7 @@ class CustomDataObjectService {
             const chunk = records.slice(i, i + MAX_BATCH_SIZE);
             //console.log(`Processing chunk from ${i} to ${i + chunk.length - 1}`);
             //console.log('Chunk size:', chunk.length);
-            await customDataObjectRecordsRepository.createMultiple(chunk);
+            await this.customDataObjectRecordsRepository.createMultiple(chunk);
         }
     }
 
@@ -76,9 +81,9 @@ class CustomDataObjectService {
         if (custom_data_object) {
             var builder = new DynamicSchemaBuilder();
             // Build Schema from the attributes of the custom data object
-           
+
             var schema = builder.buildSchema(custom_data_object.attributes);
-            
+
             // Validate the records against the schema
             var result = await this.validateRecords(schema, records);
             if (result.is_valid) {
@@ -92,7 +97,7 @@ class CustomDataObjectService {
         if (!name) {
             throw new Error('Name is required for searching.');
         }
-        return await customDataObjectRepository.searchByName(name);
+        return await this.customDataObjectRepository.searchByName(name);
     }
 
     async create(data) {
@@ -106,7 +111,7 @@ class CustomDataObjectService {
             validation_error.details = error.details;
             throw validation_error;
         }
-        var new_cdo = await customDataObjectRepository.create(value);
+        var new_cdo = await this.customDataObjectRepository.create(value);
         if (value.attributes && value.attributes.length > 0) {
             await this.attributesRepository.createMultiple(new_cdo.id, value.attributes);
         }
@@ -119,7 +124,7 @@ class CustomDataObjectService {
         }
         var attributeIds = await this.attributesRepository.getAll(id).then(attrs => attrs.map(attr => attr.id))
         await this.attributesRepository.deleteMany(id, attributeIds);
-        return await customDataObjectRepository.delete(id);
+        return await this.customDataObjectRepository.delete(id);
     }
 
     async deleteAllAttributes(custom_data_object_id) {
@@ -154,7 +159,7 @@ class CustomDataObjectService {
             validation_error.details = error.details;
             throw validation_error;
         }
-        await customDataObjectRepository.edit(custom_data_object_id, value);
+        await this.customDataObjectRepository.edit(custom_data_object_id, value);
         if (value.attributes && value.attributes.length > 0) {
             await this.deleteAllAttributes(custom_data_object_id);
             await this.attributesRepository.createMultiple(custom_data_object_id, value.attributes);
@@ -162,4 +167,4 @@ class CustomDataObjectService {
     }
 }
 
-module.exports = new CustomDataObjectService();
+module.exports = CustomDataObjectService;

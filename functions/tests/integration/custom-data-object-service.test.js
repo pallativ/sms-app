@@ -1,9 +1,10 @@
-const customDataObjectService = require('../../src/services/custom-data-object-service');
-const customDataObjectRepository = require('../../src/repositories/custom-data-object-repository');
+const CustomDataObjectService = require('../../src/services/custom-data-object-service');
+const CustomDataObjectRepository = require('../../src/repositories/custom-data-object-repository');
 const { ValidAttributes } = require('../data-providers/attributes-provider'); // Assuming this is a fixture with valid attributes
 const _ = require('lodash');
 
-
+const customDataObjectRepository = new CustomDataObjectRepository({ tenantCode: 'Home Tutions' });
+const customDataObjectService = new CustomDataObjectService({ tenantCode: 'Home Tutions' });
 describe('CustomDataObjectService', () => {
     afterEach(() => {
         jest.clearAllMocks();

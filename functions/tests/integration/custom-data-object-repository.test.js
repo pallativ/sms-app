@@ -1,5 +1,5 @@
-const customDataObjectRepository = require('../../src/repositories/custom-data-object-repository');
-
+const CustomDataObjectRepository = require('../../src/repositories/custom-data-object-repository');
+let customDataObjectRepository = new CustomDataObjectRepository({ tenantCode: 'Home Tutions' });
 describe('Custom Data Object Repository', () => {
 	afterEach(async () => {
 		// Delete all test data
