@@ -15,6 +15,7 @@ const contactRoutes = require('./src/routes/contactRoutes');
 const smsRoutes = require('./src/routes/smsRoutes');
 const whatsupRoutes = require('./src/routes/whatsupRoutes');
 const TenantRoutes = require('./src/routes/TenantRoutes');
+const CustomDataObjectRoutes = require('./src/routes/custom-data-object-routes');
 const firebaseSetup = require('./firebaseSetup');
 const cors = require('cors');
 const bodyParser = require("body-parser");
@@ -41,6 +42,7 @@ app.use('/api/contacts', contactRoutes);
 app.use('/api/sms', smsRoutes);
 app.use('/api/whatsup', whatsupRoutes);
 app.use('/api/tenant', TenantRoutes);
+app.use('/api/custom-data-object', CustomDataObjectRoutes);
 
 
 exports.backend_service = onRequest(app);

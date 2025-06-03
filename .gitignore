@@ -71,3 +71,9 @@ node_modules/
 /functions/secrets.json
 /build
 /functions/.vs/
+/.vs/comm-grid/CopilotIndices/17.14.698.11175
+/.vs/comm-grid/FileContentIndex
+/.vs/comm-grid/v17
+*.sqlite
+/.vs/slnx.sqlite-journal
+/functions/.env.test
