@@ -1,6 +1,6 @@
 
 const { auth } = require('../../firebaseSetup');
-
+const AuthorizationRespository = require('../repositories/authorization-repository');
 exports.verifyToken = async (req, res, next) => {
     try {
         const token = req.headers.authorization?.split(" ")[1];
@@ -10,41 +10,57 @@ exports.verifyToken = async (req, res, next) => {
         if (decodedToken.tenantCode !== undefined)
             req.tenantCode = decodedToken.tenantCode[0] || null;
         req.role = decodedToken.role || [];
-        req.userInfo = {
+        req.user = {
+            isPlatformAdmin: decodedToken.isPlatformAdmin || false,
             isTenantAdmin: decodedToken.isTenantAdmin || false,
             uid: decodedToken.uid,
             email: decodedToken.email,
-            tenantCode: req.tenantCode,
-            roles: decodedToken.role
         }
-        req.tenantContext = {
-            isTenantAdmin: decodedToken.isTenantAdmin || false,
-            tenantCode: req.tenantCode,
-            email: decodedToken.email,
-            uid: decodedToken.uid,
-            roles: req.role
-        };
-        console.log("decodedToken:", decodedToken);
-        console.log("userInfo:", req.userInfo);
-        console.log("tenant-context:", req.tenantContext)
+
+        const tenantId = req.headers['x-tenant-id'];
+        if (!tenantId) {
+            return res.status(403).json({ message: "Tenant ID is required" });
+        }
+        req.user.tenantId = ""; // his will be set later if tenantId is valid
+
+        var authorizationRepository = new AuthorizationRespository();
+        var user_authorization = await authorizationRepository.getUserByEmail(req.user.email);
+        if (user_authorization) {
+            req.user.roles = user_authorization.roles || [];
+            req.user.permissions = user_authorization.permissions || [];
+            //req.user.tenants = user_authorization.tenants || []; // This is not needed as we are using tenantId from headers
+        } else {
+            return res.status(403).json({ message: "user is not found." });
+        }
+        if (user_authorization.tenants?.includes(tenantId)) {
+            req.user.tenantId = tenantId;
+        } else {
+            return res.status(403).json({ message: "Unauthorized tenant" });
+        }
+
+        //console.log("decodedToken:", decodedToken);
+        //console.log("userInfo:", req.userInfo);
         next();
     } catch (error) {
-        console.log(error);
+        console.log('Error in validating token:', error);
         res.status(401).json({ error: error });
     }
 };
 
 exports.requireRole = (role) => {
-  return (req, res, next) => {
-    if (req.user?.roles?.includes(role)) return next();
-    return res.status(403).json({ error: `Role '${role}' required` });
-  };
+    return (req, res, next) => {
+        if (req.user?.isPlatformAdmin) return next();
+        if (req.user?.roles?.includes(role)) return next();
+        return res.status(403).json({ error: `Role '${role}' required` });
+    };
 };
 
-
-exports.requireTenantAdmin = (req, res, next) => {
-  if (req.user?.isTenantAdmin) return next();
-  return res.status(403).json({ error: 'Admin access required' });
+exports.requirePersmission = (permission) => {
+    return (req, res, next) => {
+        if (req.user?.isPlatformAdmin) return next();
+        if (req.user?.permissions?.includes(permission)) return next();
+        return res.status(403).json({ error: `permission '${permission}' required` });
+    };
 };
 
 
