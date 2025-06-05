@@ -34,7 +34,6 @@ exports.verifyToken = async (req, res, next) => {
     }
 };
 
-
 exports.requireRole = (role) => {
   return (req, res, next) => {
     if (req.user?.roles?.includes(role)) return next();
