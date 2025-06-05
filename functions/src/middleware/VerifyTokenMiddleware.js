@@ -5,6 +5,7 @@ exports.verifyToken = async (req, res, next) => {
     try {
         const token = req.headers.authorization?.split(" ")[1];
         if (!token) return res.status(403).json({ message: "Unauthorized" });
+        console.log("Verifying token:", token);
         const decodedToken = await auth.verifyIdToken(token);
         req.user = decodedToken;
         if (decodedToken.tenantCode !== undefined)
@@ -25,6 +26,7 @@ exports.verifyToken = async (req, res, next) => {
 
         var authorizationRepository = new AuthorizationRespository();
         var user_authorization = await authorizationRepository.getUserByEmail(req.user.email);
+        console.log("user_authorization:", user_authorization); 
         if (user_authorization) {
             req.user.roles = user_authorization.roles || [];
             req.user.permissions = user_authorization.permissions || [];
@@ -49,17 +51,18 @@ exports.verifyToken = async (req, res, next) => {
 
 exports.requireRole = (role) => {
     return (req, res, next) => {
+        console.log("requireRole middleware called with role:", role, req.user);
         if (req.user?.isPlatformAdmin) return next();
         if (req.user?.roles?.includes(role)) return next();
-        return res.status(403).json({ error: `Role '${role}' required` });
+        res.status(403).json({ error: `Role '${role}' required` });
     };
 };
 
 exports.requirePersmission = (permission) => {
-    return (req, res, next) => {
+    return async (req, res, next) => {
         if (req.user?.isPlatformAdmin) return next();
         if (req.user?.permissions?.includes(permission)) return next();
-        return res.status(403).json({ error: `permission '${permission}' required` });
+        res.status(403).json({ error: `permission '${permission}' required` });
     };
 };
 

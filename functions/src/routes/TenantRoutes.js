@@ -1,11 +1,12 @@
-const TenantController = require('../controllers/TenantController');
 const express = require('express');
-const { verifyToken } = require('../middleware/VerifyTokenMiddleware');
 const router = express.Router();
+const { verifyToken, requireRole } = require('../middleware/VerifyTokenMiddleware');
+const TenantController = require('../controllers/TenantController');
 
-router.post('/', verifyToken, TenantController.createTenant);
-router.get('/', verifyToken, TenantController.getAllTenants);
-router.post('/set-tenant-admin', verifyToken, TenantController.addSuperAdmin);
+
+router.post('/', verifyToken, requireRole("tenant-admin"), TenantController.createTenant);
+router.get('/', verifyToken, requireRole("tenant-admin"), TenantController.getAllTenants);
+router.post('/set-tenant-admin', verifyToken, requireRole("tenant-admin"), TenantController.addSuperAdmin);
 
 
 

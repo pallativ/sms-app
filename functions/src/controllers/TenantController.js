@@ -5,17 +5,12 @@ const { auth } = require('../../firebaseSetup');
 exports.createTenant = async (req, res) => {
     try {
         const { code, name, adminEmail } = req.body;
-        if (req.user.role === "super-admin") {
-            if (await tenantModel.checkTenantExists(code)) {
-                res.status(409).json({ message: `Tenant already exists`, tenant: { code: code, name: name } });
-            }
-            else {
-                const tenantDetails = await tenantService.createTenant({ code, name, adminEmail: adminEmail });
-                res.status(201).json({ message: 'Tenant created successfully.', id: tenantDetails.tenantId });
-            }
+        if (await tenantModel.checkTenantExists(code)) {
+            res.status(409).json({ message: `Tenant already exists`, tenant: { code: code, name: name } });
         }
         else {
-            res.status(403).json({ message: 'Your are not authorized to create the tenant' });
+            const tenantDetails = await tenantService.createTenant({ code, name, adminEmail: adminEmail });
+            res.status(201).json({ message: 'Tenant created successfully.', id: tenantDetails.tenantId });
         }
     } catch (error) {
         res.status(500).json({ error: error });
