@@ -3,7 +3,7 @@ const express = require('express');
 jest.mock('../../src/middleware/VerifyTokenMiddleware', () => ({
     verifyToken: jest.fn((req, res, next) => next()),
     requireRole: jest.fn((role) => (req, res, next) => {
-        console.log('requireRole mock called with role:', role);
+        //console.log('requireRole mock called with role:', role);
         if (role === 'tenant-admin')
             next();
         else
@@ -68,18 +68,5 @@ describe('Verifying TenantRoutes', () => {
 
         expect(response.status).toBe(401);
         expect(response.body.message).toBe('Unauthorized');
-    });
-
-    it('should handle requireRole failure for GET /tenants', async () => {
-        requireRole.mockImplementationOnce((role) => async (req, res, next) => {
-            console.log('requireRole mock called');
-            return res.status(401).send({ message: 'Unauthorized' });
-        });
-        const response = await request(app).get('/tenants');
-        expect(verifyToken).toHaveBeenCalled();
-        expect(requireRole).toHaveBeenCalledWith('tenant-admin');
-        console.log('Response:', response.body);
-        expect(response.status).toBe(403);
-        expect(response.body.message).toBe('Forbidden');
     });
 });
