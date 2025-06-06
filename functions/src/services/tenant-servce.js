@@ -73,7 +73,7 @@ exports.getAllTenants = async () => {
     }
 }
 
-exports.getUsersByTenant = async (tenantCode) => {
+exports.getTenantUsers = async (tenantCode) => {
     try {
         const users = await tenantModel.getTenantUsers(tenantCode);
         return users;

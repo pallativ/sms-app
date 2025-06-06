@@ -27,36 +27,89 @@ async function getIdToken(uid, claims = {}) {
 
 
 describe('Verifying TenantRoutes', () => {
+    let tenantCode, email;
+    const tenantAdminEmail = 'sample@sample.com';
+    let usersToDelete = [];
+    let tenantsToDelete = [];
+    let userRolesToDelete = [];
+    const user = {
+        email: email,
+        password: "Dhishakti@123",
+        displayName: email,
+    };
+    function generateRandomEmail() {
+        const randomString = Math.random().toString(36).substring(2, 10);
+        return `user_${randomString}@example.com`;
+    }
+    function generateRandomTenantCode() {
+        const randomString = Math.random().toString(36).substring(2, 8).toUpperCase();
+        return `TENANT_${randomString}`;
+    }
+
+    deleteUsers = async () => {
+        for (const user of usersToDelete) {
+            await auth.deleteUser(user.uid);
+        }
+    }
+
+    deleteTenants = async () => {
+
+    }
+
+    beforeAll(async () => {
+        // Initialize Firebase Admin SDK or any other setup required
+        console.log("Setup completed before running tests.");
+    });
+
+    afterAll(async () => {
+        await deleteUsers();
+        await deleteTenants();
+        console.log("Tear down.");
+    });
     it("create a tenant using platform admin", async () => {
-        function generateRandomEmail() {
-            const randomString = Math.random().toString(36).substring(2, 10);
-            return `user_${randomString}@example.com`;
-        }
-
-        function generateRandomTenantCode() {
-            const randomString = Math.random().toString(36).substring(2, 8).toUpperCase();
-            return `TENANT_${randomString}`;
-        }
-
         // Example usage:
-        const tenantCode = generateRandomTenantCode();
+        tenantCode = generateRandomTenantCode();
         //console.log("Generated Tenant Code:", tenantCode);
 
-        var email = generateRandomEmail();
-        var new_user = await auth.createUser({
-            email: email,
-            password: "Dhishakti@123",
-            displayName: email,
-        });
+        email = generateRandomEmail();
+        let new_user = await auth.createUser(user);
+        usersToDelete.push(new_user);
         //console.log("User created:", new_user);
         const idToken = await getIdToken(new_user.uid, { "isPlatformAdmin": true });
         //console.log("Custom Token:", idToken);
         const response = await request(app).post('/tenants')
             .set('Authorization', `Bearer ${idToken}`)
-            .send({ name: tenantCode, code: tenantCode, "adminEmail": 'sample@sample.com' });
+            .send({ name: tenantCode, code: tenantCode, "adminEmail": tenantAdminEmail });
         console.log("Response:", response.body);
         expect(response.status).toBe(201);
         expect(response.body.message).toBe("Tenant created successfully.");
-       
+
+        // Fetching the tenants and see if there is a record for the same.
+
+        // Fetch tenants with a filter for the specific name
+        const getResponse = await request(app).get(`/tenants`)
+            .set('Authorization', `Bearer ${idToken}`);
+        expect(getResponse.status).toBe(200);
+
+        console.log(getResponse.body);
+        // Check if the response contains the tenant with the given name
+        const tenants = getResponse.body.tenants;
+        const tenantExists = tenants.some(tenant => tenant.code === tenantCode);
+        expect(tenantExists).toBe(true);
+
+        // Fetch users for the specific tenant
+        const getUsersResponse = await request(app).get(`/tenants/${tenantCode}/users`)
+            .set('Authorization', `Bearer ${idToken}`);
+        expect(getUsersResponse.status).toBe(200);
+
+        // Check if the response contains users for the tenant
+        /*console.log("Users in tenant:", getUsersResponse.body.users);*/
+        const users = getUsersResponse.body.users;
+        expect(Array.isArray(users)).toBe(true);
+        expect(users.length).toBeGreaterThan(0);
+
+        // Optionally, verify if the admin email exists in the users list
+        const adminExists = users.some(user => user.email === tenantAdminEmail);
+        expect(adminExists).toBe(true);
     });
 });

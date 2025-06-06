@@ -33,19 +33,20 @@ exports.addSuperAdmin = async (req, res) => {
     try {
         //console.log("Adding Claims to admin user");
         tenantModel.setCustomClaimRole(req.user.uid, "tenant-admin");
-        res.status(200).json({ message: 'current logged in user set as tenant admin', email: req.user.email });
+        return res.status(200).json({ message: 'current logged in user set as tenant admin', email: req.user.email });
     } catch (error) {
-        res.status(500).json({ error: error });
+        return res.status(500).json({ error: error });
     }
 }
 
 exports.getTenantUsers = async (req, res) => {
     try {
         const { tenantId } = req.params;
+        console.log("Fetching users for tenant:", tenantId);
         const users = await tenantService.getTenantUsers(tenantId);
-        res.status(200).json({ users });
+        return res.status(200).json({ users });
     } catch (error) {
-        res.status(500).json({ error: error });
+        return res.status(500).json({ error: error });
     }
 }
 

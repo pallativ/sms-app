@@ -104,7 +104,7 @@ exports.getAllTenants = async () => {
         }
         const tenants = [];
         snapshot.forEach(doc => {
-            tenants.push(doc.data());
+            tenants.push({id:doc.id, ...doc.data() });
         });
         return tenants;
     } catch (error) {
