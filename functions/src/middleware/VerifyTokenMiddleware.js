@@ -49,6 +49,28 @@ exports.verifyToken = async (req, res, next) => {
     }
 };
 
+exports.requirePlatformAdmin = async (req, res, next) => {
+    const token = req.headers.authorization?.split(" ")[1];
+    if (!token) return res.status(403).json({ message: "Unauthorized" });
+    //console.log("Verifying token:", token);
+    const decodedToken = await auth.verifyIdToken(token);
+    req.user = decodedToken;
+    if (decodedToken.tenantCode !== undefined)
+        req.tenantCode = decodedToken.tenantCode[0] || null;
+    req.role = decodedToken.role || [];
+    req.user = {
+        isPlatformAdmin: decodedToken.isPlatformAdmin || false,
+        isTenantAdmin: decodedToken.isTenantAdmin || false,
+        uid: decodedToken.uid,
+        email: decodedToken.email,
+    }
+
+    if (!req.user.isPlatformAdmin) {
+        res.status(403).json({ message: "Unauthorized. Required PlatformAdmin Role." })
+    }
+    next();
+}
+
 exports.requireRole = (role) => {
     return (req, res, next) => {
         //console.log("requireRole middleware called with role:", role, req.user);

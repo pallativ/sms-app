@@ -1,6 +1,8 @@
 const tenantModel = require('../models/TenantModel');
 const { auth } = require('../../firebaseSetup');
 const { logger } = require('firebase-functions');
+const AuthorizationRepository = require("../repositories/authorization-repository")
+
 
 exports.createTenant = async (tenantDetails) => {
     try {
@@ -16,7 +18,7 @@ exports.createTenant = async (tenantDetails) => {
             // Creating the admin record for the tenant.
             userRecord = await auth.createUser({
                 email: tenantDetails.adminEmail,
-                password: "msgrouter@123",
+                password: "Dhishakti@123",
                 displayName: tenantDetails.adminEmail,
             });
         }
@@ -24,9 +26,27 @@ exports.createTenant = async (tenantDetails) => {
         // Assigning the user to tenant.
         await tenantModel.assignUserToTenant(tenantCode, userRecord.uid, userRecord.email);
 
+        // assigining the roles to the users.
+        var userInfo = {
+            userId: userRecord.uid,
+            email: userRecord.email,
+            tenants: [tenantCode],
+            roles: ["tenant-user"],
+            permissions: ["all"],
+        }
+
+        var authRepository = new AuthorizationRepository();
+        var result = await authRepository.isValid(userInfo);
+        if (result.isValid)
+            await authRepository.addUser(result.value);
+        else {
+            console.log("validation result:", result);
+            throw new Error("Error in assigning the roles and tenants to the user.");
+        }
+
         // assigning the claims to tenant Admin.
         await tenantModel.setCustomClaimByName(userRecord.uid, "tenantCode", [tenantCode]);
-        await tenantModel.setCustomClaimByName(userRecord.uid, "role", ["tenant-admin"]);
+        await tenantModel.setCustomClaimByName(userRecord.uid, "roles", ["tenant-user"]);
 
         return { tenantCode, uid: userRecord.uid };
     }

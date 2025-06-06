@@ -1,17 +1,14 @@
 const request = require('supertest');
 const express = require('express');
 jest.mock('../../src/middleware/VerifyTokenMiddleware', () => ({
-    verifyToken: jest.fn((req, res, next) => next()),
-    requireRole: jest.fn((role) => (req, res, next) => {
-        //console.log('requireRole mock called with role:', role);
-        if (role === 'tenant-admin')
-            next();
-        else
-            res.status(403).json({ message: 'Forbidden' });
-    })
+    requirePlatformAdmin: jest.fn((req, res, next) => next()),
 }));
+jest.spyOn(console, 'log').mockImplementation(() => { });
+jest.spyOn(console, 'info').mockImplementation(() => { });
+jest.spyOn(console, 'debug').mockImplementation(() => { });
 
-const { verifyToken, requireRole } = require('../../src/middleware/VerifyTokenMiddleware');
+const { logger } = require('firebase-functions');
+const { requirePlatformAdmin } = require('../../src/middleware/VerifyTokenMiddleware');
 
 let TenantRoutes = require('../../src/routes/TenantRoutes');
 const TenantController = require('../../src/controllers/TenantController');
@@ -30,8 +27,7 @@ describe('Verifying TenantRoutes', () => {
     it('should call createTenant when POST /tenants is hit', async () => {
         const response = await request(app).post('/tenants').send({ name: 'New Tenant' });
 
-        expect(verifyToken).toHaveBeenCalled();
-        expect(requireRole).toHaveBeenCalledWith('tenant-admin');
+        expect(requirePlatformAdmin).toHaveBeenCalled();
         expect(TenantController.createTenant).toHaveBeenCalled();
         expect(response.status).toBe(201);
         expect(response.body.message).toBe('Tenant created');
@@ -40,8 +36,7 @@ describe('Verifying TenantRoutes', () => {
     it('should call getAllTenants when GET /tenants is hit', async () => {
         const response = await request(app).get('/tenants');
 
-        expect(verifyToken).toHaveBeenCalled();
-        expect(requireRole).toHaveBeenCalledWith('tenant-admin');
+        expect(requirePlatformAdmin).toHaveBeenCalled();
         expect(TenantController.getAllTenants).toHaveBeenCalled();
         expect(response.status).toBe(200);
         expect(response.body).toEqual([{ id: 1, name: 'Tenant1' }]);
@@ -50,8 +45,7 @@ describe('Verifying TenantRoutes', () => {
     it('should call addSuperAdmin when POST /tenants/set-tenant-admin is hit', async () => {
         const response = await request(app).post('/tenants/set-tenant-admin').send({ userId: 123 });
 
-        expect(verifyToken).toHaveBeenCalled();
-        expect(requireRole).toHaveBeenCalledWith('tenant-admin');
+        expect(requirePlatformAdmin).toHaveBeenCalled();
         expect(TenantController.addSuperAdmin).toHaveBeenCalled();
         expect(response.status).toBe(200);
         expect(response.body.message).toBe('Super admin added');
@@ -60,7 +54,7 @@ describe('Verifying TenantRoutes', () => {
 
     it('should handle verifyToken failure for POST /tenants', async () => {
         // Override verifyToken for this test case
-        verifyToken.mockImplementationOnce((req, res, next) => {
+        requirePlatformAdmin.mockImplementationOnce((req, res, next) => {
             res.status(401).send({ message: 'Unauthorized' });
         });
 
@@ -68,5 +62,18 @@ describe('Verifying TenantRoutes', () => {
 
         expect(response.status).toBe(401);
         expect(response.body.message).toBe('Unauthorized');
+    });
+
+    it('should handle requireRole failure for GET /tenants', async () => {
+        logger.debug("should handle requireRole failure for GET /tenants");
+        requirePlatformAdmin.mockImplementationOnce((req, res, next) => {
+            res.status(403).send({ message: 'Unauthorized' });
+        });
+        const response = await request(app).get('/tenants');
+        expect(requirePlatformAdmin).toHaveBeenCalled();
+        logger.debug('Response:', response.body);
+        expect(response.status).toBe(403);
+        expect(response.body.message).toBe('Unauthorized');
+
     });
 });

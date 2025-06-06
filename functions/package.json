@@ -13,7 +13,7 @@
         "test:unit:watch": "jest --watch --detectOpenHandles --slowTestThreshold=10 tests/unit",
         "test:integration": "jest tests/integration",
         "test:integration:watch": "jest --watch --detectOpenHandles --slowTestThreshold=10 tests/integration/*",
-        "test:watch": "jest --watch --detectOpenHandles --slowTestThreshold=10",
+        "test:watch": "jest --runInBand --watch --detectOpenHandles --slowTestThreshold=10",
         "emulators": "firebase emulators:start --only firestore,auth"
     },
     "engines": {
