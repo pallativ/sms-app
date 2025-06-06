@@ -59,17 +59,23 @@ exports.assignUserToTenant = async (tenantCode, uid, email) => {
     logger.info("Assigned user to tenant", { uid, email })
 }
 
-exports.getTenantByUserEmail = async (email) => {
-    const tenantsRef = db.collection("tenants");
-    const querySnapshot = await tenantsRef.where("users", "array-contains", email).get();
-
-    if (querySnapshot.empty) {
-        throw new Error(`❌ No tenant found for user with email "${email}".`);
+exports.getTenantsByUserEmail = async (email) => {
+    const docRef = db.collection("users").doc(email)
+    const doc = await docRef.get();
+    if (doc.exists) {
+        const tenants = [];
+        for (const tenant of doc.data().tenants) {
+            var tenantDoc = await db.collection("tenants").doc(tenant).get();
+            tenants.push({ "id": tenantDoc.id, ...tenantDoc.data() });
+        }
+        return tenants;
     }
-
-    const tenantData = querySnapshot.docs[0].data();
-    return { code: tenantData.code, name: tenantData.name };
+    else {
+        logger.info(`No tenants found for user with email "${email}".`);
+        return [];
+    }
 }
+
 
 exports.setCustomClaimByName = async (uid, claimName, claimValue) => {
     try {
@@ -85,7 +91,8 @@ exports.setCustomClaimByName = async (uid, claimName, claimValue) => {
         throw new Error("Error in setting custom claim");
     }
 }
-exports.setCustomClaimRole = async (userId,  role) => {
+
+exports.setCustomClaimRole = async (userId, role) => {
     try {
         await auth.setCustomUserClaims(userId, { role: role });
         //console.log(`✅ Custom claim set: User ${userId} -> Role ${role}`);
@@ -104,7 +111,7 @@ exports.getAllTenants = async () => {
         }
         const tenants = [];
         snapshot.forEach(doc => {
-            tenants.push({id:doc.id, ...doc.data() });
+            tenants.push({ id: doc.id, ...doc.data() });
         });
         return tenants;
     } catch (error) {

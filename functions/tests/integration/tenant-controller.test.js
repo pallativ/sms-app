@@ -2,6 +2,7 @@
 const express = require('express');
 const { auth } = require('../../firebaseSetup');
 const TenantRoutes = require('../../src/routes/TenantRoutes');
+const TenantModel = require('../../src/models/TenantModel');
 const app = express();
 app.use(express.json());
 app.use('/tenants', TenantRoutes);
@@ -131,8 +132,10 @@ describe('Multiple Users to a tenant', () => {
             password: "Dhishakti@123",
             displayName: platformAdminEmail,
         };
+
         let new_user = await auth.createUser(user);
-        usersToDelete.push(new_user);
+        TenantModel.setCustomClaimByName(new_user.uid, "isPlatformAdmin", true);
+        //usersToDelete.push(new_user);
         //console.log("User created:", new_user);
         idToken = await getIdToken(new_user.uid, { "isPlatformAdmin": true });
     })
@@ -155,7 +158,7 @@ describe('Multiple Users to a tenant', () => {
 
         const assign_user2_response = await request(app).post(`/tenants/assign-user`)
             .set('Authorization', `Bearer ${idToken}`)
-            .send({ tenantCode: tenantCode,  "userEmail": user2_email });
+            .send({ tenantCode: tenantCode, "userEmail": user2_email });
         //console.log("Assign User 2 Response:", assign_user2_response.body);
         expect(assign_user2_response.status).toBe(200);
 
@@ -176,4 +179,38 @@ describe('Multiple Users to a tenant', () => {
         expect(Array.isArray(users)).toBe(true);
         expect(users.length).toEqual(3);
     })
+    it("should return all tenants that user has access", async () => {
+        const user1_email = generateRandomEmail();
+        var tenant1_code = generateRandomTenantCode();
+
+        // creating a tenant with user1_email as admin.
+        const create_tenant1_response = await request(app).post('/tenants')
+            .set('Authorization', `Bearer ${idToken}`)
+            .send({ name: tenant1_code, code: tenant1_code, "adminEmail": user1_email });
+
+        expect(create_tenant1_response.status).toBe(201);
+
+        // Creatg another tenant with the same user.
+        var tenant2_code = generateRandomTenantCode();
+        const create_tenant2_response = await request(app).post('/tenants')
+            .set('Authorization', `Bearer ${idToken}`)
+            .send({ name: tenant2_code, code: tenant2_code, "adminEmail": user1_email });
+        expect(create_tenant2_response.status).toBe(201);
+
+        var tenant_user = await auth.getUserByEmail(user1_email);
+        var tenant_user_id_token = await getIdToken(tenant_user.uid, {});
+        expect(tenant_user_id_token).toBeDefined();
+        const get_tenants_assigned_to_user = await request(app).get('/tenants/get-user-tenants')
+            .set('Authorization', `Bearer ${tenant_user_id_token}`);
+        //console.log("Get User Tenants Response:", get_tenants_assigned_to_user.body);
+        expect(get_tenants_assigned_to_user.status).toBe(200);
+        const tenants = get_tenants_assigned_to_user.body.tenants;
+        //console.log("Fetched Tenants:", tenants);
+
+        expect(Array.isArray(tenants)).toBe(true);
+        expect(tenants.length).toBe(2);
+        expect(tenants.some(t => t.code === tenant1_code)).toBe(true);
+        expect(tenants.some(t => t.code === tenant2_code)).toBe(true);
+    })
+
 });

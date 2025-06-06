@@ -174,7 +174,7 @@ describe('Tenant Service', () => {
             const users = [{ uid: 'user1' }, { uid: 'user2' }];
             tenantModel.getTenantUsers.mockResolvedValue(users);
 
-            const result = await tenantService.getUsersByTenant(tenantCode);
+            const result = await tenantService.getTenantUsers(tenantCode);
 
             expect(result).toEqual(users);
             expect(tenantModel.getTenantUsers).toHaveBeenCalledWith(tenantCode);
@@ -184,7 +184,7 @@ describe('Tenant Service', () => {
             const tenantCode = 'tenant123';
             tenantModel.getTenantUsers.mockRejectedValue(new Error('Database error'));
 
-            await expect(tenantService.getUsersByTenant(tenantCode)).rejects.toThrow('Error in retrieving users by tenant');
+            await expect(tenantService.getTenantUsers(tenantCode)).rejects.toThrow('Error in retrieving users by tenant');
             expect(logger.error).toHaveBeenCalledWith('Error in retrieving users by tenant', expect.any(Error));
         });
     });

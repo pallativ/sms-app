@@ -69,4 +69,15 @@ exports.getTenantUsers = async (req, res) => {
     }
 }
 
+exports.getTenantsByUserEmail = async (req, res) => {
+    try {
+        const email = req.user.email;
+        console.log("Fetching tenant for user:", email);
+        const tenants = await tenantService.getTenantsByUserEmail(email);
+        return res.status(200).json({ tenants });
+    } catch (error) {
+        return res.status(500).json({ error: error });
+    }
+}
+
 

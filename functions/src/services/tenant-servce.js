@@ -146,6 +146,20 @@ exports.impersonateSuperAdmin = async (userInfo, tenantCode) => {
     }
 }
 
+exports.getTenantsByUserEmail = async (email) => {
+    try {
+        const userRecord = await getUserByEmail(email);
+        if (!userRecord) {
+            throw new Error(`User with email ${email} not found`);
+        }
+        const tenants = await tenantModel.getTenantsByUserEmail(email);
+        return tenants;
+    } catch (error) {
+        logger.error('Error in retrieving user tenants', error);
+        throw new Error("Error in retrieving user tenants");
+    }
+}
+
 async function getUserByEmail(email) {
     try {
         const userRecord = await auth.getUserByEmail(email);

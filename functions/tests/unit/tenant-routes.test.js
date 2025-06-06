@@ -2,6 +2,7 @@ const request = require('supertest');
 const express = require('express');
 jest.mock('../../src/middleware/VerifyTokenMiddleware', () => ({
     requirePlatformAdmin: jest.fn((req, res, next) => next()),
+    Authenticate: jest.fn((req, res, next) => next()),
 }));
 
 
@@ -19,7 +20,7 @@ jest.spyOn(console, 'debug').mockImplementation(() => { });
 
 const { auth } = require('../../firebaseSetup');
 const { logger } = require('firebase-functions');
-const { requirePlatformAdmin } = require('../../src/middleware/VerifyTokenMiddleware');
+const { requirePlatformAdmin, Authenticate } = require('../../src/middleware/VerifyTokenMiddleware');
 
 let TenantRoutes = require('../../src/routes/TenantRoutes');
 const TenantController = require('../../src/controllers/TenantController');
@@ -28,7 +29,9 @@ jest.mock('../../src/controllers/TenantController', () => ({
     createTenant: jest.fn((req, res) => res.status(201).send({ message: 'Tenant created' })),
     getAllTenants: jest.fn((req, res) => res.status(200).send([{ id: 1, name: 'Tenant1' }])),
     addSuperAdmin: jest.fn((req, res) => res.status(200).send({ message: 'Super admin added' })),
-    getTenantUsers: jest.fn((req, res) => res.status(200).send({ message: 'Super admin added' }))
+    addUserToTenant: jest.fn((req, res) => res.status(200).send({ message: 'Super admin added' })),
+    getTenantUsers: jest.fn((req, res) => res.status(200).send({ message: 'Super admin added' })),
+    getTenantsByUserEmail: jest.fn((req, res) => res.status(200).send({ message: 'Super admin added' })),
 }));
 
 const app = express();
