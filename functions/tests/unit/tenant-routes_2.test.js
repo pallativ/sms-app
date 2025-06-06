@@ -23,17 +23,15 @@ app.use(express.json());
 app.use('/tenants', TenantRoutes);
 
 describe('Verifying TenantRoutes', () => {
-
-
     it('should handle requireRole failure for GET /tenants', async () => {
         requireRole.mockImplementationOnce((role) => async (req, res, next) => {
-            console.log('requireRole mock called');
+            //console.log('requireRole mock called');
             res.status(403).send({ message: 'Unauthorized' });
         });
         const response = await request(app).get('/tenants');
         expect(verifyToken).toHaveBeenCalled();
         expect(requireRole).toHaveBeenCalledWith('tenant-admin');
-        console.log('Response:', response.body);
+        //console.log('Response:', response.body);
         expect(response.status).toBe(403);
         expect(response.body.message).toBe('Forbidden');
 
