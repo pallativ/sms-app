@@ -3,10 +3,21 @@ const express = require('express');
 jest.mock('../../src/middleware/VerifyTokenMiddleware', () => ({
     requirePlatformAdmin: jest.fn((req, res, next) => next()),
 }));
+
+
+jest.mock('../../firebaseSetup', () => ({
+    auth: {
+        getUserByEmail: jest.fn(),
+        createUser: jest.fn(),
+        verifyIdToken: jest.fn()
+    },
+}));
+
 jest.spyOn(console, 'log').mockImplementation(() => { });
 jest.spyOn(console, 'info').mockImplementation(() => { });
 jest.spyOn(console, 'debug').mockImplementation(() => { });
 
+const { auth } = require('../../firebaseSetup');
 const { logger } = require('firebase-functions');
 const { requirePlatformAdmin } = require('../../src/middleware/VerifyTokenMiddleware');
 

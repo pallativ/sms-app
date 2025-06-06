@@ -66,7 +66,7 @@ exports.requirePlatformAdmin = async (req, res, next) => {
     }
 
     if (!req.user.isPlatformAdmin) {
-        res.status(403).json({ message: "Unauthorized. Required PlatformAdmin Role." })
+        return res.status(403).json({ message: "Unauthorized. Required PlatformAdmin Role." })
     }
     next();
 }

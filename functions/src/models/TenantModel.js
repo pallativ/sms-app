@@ -88,7 +88,7 @@ exports.setCustomClaimByName = async (uid, claimName, claimValue) => {
 exports.setCustomClaimRole = async (userId,  role) => {
     try {
         await auth.setCustomUserClaims(userId, { role: role });
-        console.log(`✅ Custom claim set: User ${userId} -> Role ${role}`);
+        //console.log(`✅ Custom claim set: User ${userId} -> Role ${role}`);
     } catch (error) {
         console.error("❌ Error setting custom claim:", error);
     }

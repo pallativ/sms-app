@@ -38,7 +38,12 @@ exports.createTenant = async (tenantDetails) => {
         var authRepository = new AuthorizationRepository();
         var result = await authRepository.isValid(userInfo);
         if (result.isValid) {
-            await authRepository.addUser(result.value);
+            if (await authRepository.getUserByEmail(userRecord.email) == null) {
+                await authRepository.addUser(result.value);
+            }
+            else {
+                await authRepository.addTenant(userRecord.email, tenantCode);
+            }
             logger.debug("assigned the user to the tenant and added role 'tenant-user'")
         }
         else {
