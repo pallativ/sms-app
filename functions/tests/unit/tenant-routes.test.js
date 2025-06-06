@@ -74,6 +74,5 @@ describe('Verifying TenantRoutes', () => {
         logger.debug('Response:', response.body);
         expect(response.status).toBe(403);
         expect(response.body.message).toBe('Unauthorized');
-
     });
 });
