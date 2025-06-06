@@ -1,6 +1,7 @@
 const { verifyToken, requireRole, requirePersmission } = require('../../src/middleware/VerifyTokenMiddleware');
 const AuthorizationRespository = require('../../src/repositories/authorization-repository');
 const { auth } = require('../../firebaseSetup');
+const { logger } = require('firebase-functions');
 
 jest.mock('../../firebaseSetup', () => ({
     auth: {

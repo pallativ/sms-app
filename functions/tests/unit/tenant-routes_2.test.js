@@ -1,5 +1,11 @@
 const request = require('supertest');
 const express = require('express');
+jest.spyOn(console, 'log').mockImplementation(() => { });
+jest.spyOn(console, 'info').mockImplementation(() => { });
+jest.spyOn(console, 'debug').mockImplementation(() => { });
+
+const { logger } = require('firebase-functions');
+
 jest.mock('../../src/middleware/VerifyTokenMiddleware', () => ({
     verifyToken: jest.fn((req, res, next) => next()),
     requireRole: jest.fn((role) => (req, res, next) => {
@@ -24,14 +30,15 @@ app.use('/tenants', TenantRoutes);
 
 describe('Verifying TenantRoutes', () => {
     it('should handle requireRole failure for GET /tenants', async () => {
+        logger.debug("should handle requireRole failure for GET /tenants");
         requireRole.mockImplementationOnce((role) => async (req, res, next) => {
-            //console.log('requireRole mock called');
+            logger.debug('requireRole mock called');
             res.status(403).send({ message: 'Unauthorized' });
         });
         const response = await request(app).get('/tenants');
         expect(verifyToken).toHaveBeenCalled();
         expect(requireRole).toHaveBeenCalledWith('tenant-admin');
-        //console.log('Response:', response.body);
+        logger.debug('Response:', response.body);
         expect(response.status).toBe(403);
         expect(response.body.message).toBe('Forbidden');
 
