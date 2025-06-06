@@ -76,12 +76,12 @@ exports.setCustomClaimByName = async (uid, claimName, claimValue) => {
         const user = await auth.getUser(uid);
         const currentClaims = user.customClaims || {}; // Default to empty object
         currentClaims[claimName] = claimValue;
-        logger.info("Auth Custom Claims:",user.customClaims)
+        //logger.info("Auth Custom Claims:",user.customClaims)
         logger.info(currentClaims);
         await auth.setCustomUserClaims(uid, currentClaims);
-        logger.info(`✅ Custom claim set: User ${uid} -> ${claimName}: ${claimValue}`);
+        //logger.info(`✅ Custom claim set: User ${uid} -> ${claimName}: ${claimValue}`);
     } catch (error) {
-        logger.error("❌ Error setting custom claim:", error);
+        //logger.error("❌ Error setting custom claim:", error);
         throw new Error("Error in setting custom claim");
     }
 }

@@ -24,7 +24,14 @@ async function getIdToken(uid, claims = {}) {
     const data = await response.json();
     return data.idToken; // ✅ Firebase Auth ID Token
 }
-
+function generateRandomEmail() {
+    const randomString = Math.random().toString(36).substring(2, 10);
+    return `user_${randomString}@example.com`;
+}
+function generateRandomTenantCode() {
+    const randomString = Math.random().toString(36).substring(2, 8).toUpperCase();
+    return `TENANT_${randomString}`;
+}
 
 describe('Verifying TenantRoutes', () => {
     let tenantCode, email;
@@ -37,14 +44,6 @@ describe('Verifying TenantRoutes', () => {
         password: "Dhishakti@123",
         displayName: email,
     };
-    function generateRandomEmail() {
-        const randomString = Math.random().toString(36).substring(2, 10);
-        return `user_${randomString}@example.com`;
-    }
-    function generateRandomTenantCode() {
-        const randomString = Math.random().toString(36).substring(2, 8).toUpperCase();
-        return `TENANT_${randomString}`;
-    }
 
     deleteUsers = async () => {
         for (const user of usersToDelete) {
@@ -80,7 +79,7 @@ describe('Verifying TenantRoutes', () => {
         const response = await request(app).post('/tenants')
             .set('Authorization', `Bearer ${idToken}`)
             .send({ name: tenantCode, code: tenantCode, "adminEmail": tenantAdminEmail });
-        console.log("Response:", response.body);
+        //console.log("Response:", response.body);
         expect(response.status).toBe(201);
         expect(response.body.message).toBe("Tenant created successfully.");
 
@@ -91,7 +90,7 @@ describe('Verifying TenantRoutes', () => {
             .set('Authorization', `Bearer ${idToken}`);
         expect(getResponse.status).toBe(200);
 
-        console.log(getResponse.body);
+        //console.log(getResponse.body);
         // Check if the response contains the tenant with the given name
         const tenants = getResponse.body.tenants;
         const tenantExists = tenants.some(tenant => tenant.code === tenantCode);
@@ -112,4 +111,69 @@ describe('Verifying TenantRoutes', () => {
         const adminExists = users.some(user => user.email === tenantAdminEmail);
         expect(adminExists).toBe(true);
     });
+
+});
+
+describe('Multiple Users to a tenant', () => {
+    let idToken;
+    const platformAdminEmail = generateRandomEmail();
+    let usersToDelete = [];
+
+    deleteUsers = async () => {
+        for (const user of usersToDelete) {
+            await auth.deleteUser(user.uid);
+        }
+    }
+
+    beforeAll(async () => {
+        const user = {
+            email: platformAdminEmail,
+            password: "Dhishakti@123",
+            displayName: platformAdminEmail,
+        };
+        let new_user = await auth.createUser(user);
+        usersToDelete.push(new_user);
+        //console.log("User created:", new_user);
+        idToken = await getIdToken(new_user.uid, { "isPlatformAdmin": true });
+    })
+
+    afterAll(async () => {
+        await deleteUsers();
+    })
+
+    it("add mutiple users to a tenant", async () => {
+        const user1_email = "1@gmail.com";
+        const user2_email = "2@gmail.com";
+        const user3_email = "3@gmail.com";
+        console.log("User Emails:", user1_email, user2_email, user3_email);
+        var tenantCode = generateRandomTenantCode();
+        const create_tenant_response = await request(app).post('/tenants')
+            .set('Authorization', `Bearer ${idToken}`)
+            .send({ name: tenantCode, code: tenantCode, "adminEmail": user1_email });
+
+        expect(create_tenant_response.status).toBe(201);
+
+        const assign_user2_response = await request(app).post(`/tenants/assign-user`)
+            .set('Authorization', `Bearer ${idToken}`)
+            .send({ tenantCode: tenantCode,  "userEmail": user2_email });
+        //console.log("Assign User 2 Response:", assign_user2_response.body);
+        expect(assign_user2_response.status).toBe(200);
+
+        const assign_user3_response = await request(app).post(`/tenants/assign-user`)
+            .set('Authorization', `Bearer ${idToken}`)
+            .send({ tenantCode: tenantCode, "userEmail": user3_email });
+
+        //console.log("Assign User Response:", assign_user3_response.body);
+
+        //// Fetch users for the specific tenant
+        const getUsersResponse = await request(app).get(`/tenants/${tenantCode}/users`)
+            .set('Authorization', `Bearer ${idToken}`);
+        expect(getUsersResponse.status).toBe(200);
+
+        //// Check if the response contains users for the tenant
+        ///*console.log("Users in tenant:", getUsersResponse.body.users);*/
+        const users = getUsersResponse.body.users;
+        expect(Array.isArray(users)).toBe(true);
+        expect(users.length).toEqual(3);
+    })
 });

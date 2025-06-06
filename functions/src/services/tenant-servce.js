@@ -83,6 +83,58 @@ exports.getTenantUsers = async (tenantCode) => {
     }
 }
 
+exports.assignUserToTenant = async (tenantCode, email) => {
+    try {
+        // fetch user by email address.
+        let userRecord = await getUserByEmail(email)
+
+        // Check if the user already exists.
+        if (userRecord == null) {
+            // Creating the admin record for the tenant.
+            userRecord = await auth.createUser({
+                email: email,
+                password: "Dhishakti@123",
+                displayName: email,
+            });
+        }
+
+        // Assigning the user to tenant.
+        await tenantModel.assignUserToTenant(tenantCode, userRecord.uid, userRecord.email);
+
+        // assigining the roles to the users.
+        var userInfo = {
+            userId: userRecord.uid,
+            email: userRecord.email,
+            tenants: [tenantCode],
+            roles: ["tenant-user"],
+            permissions: ["all"],
+        }
+
+        var authRepository = new AuthorizationRepository();
+        var result = await authRepository.isValid(userInfo);
+        if (result.isValid) {
+            if (await authRepository.getUserByEmail(userRecord.email) == null) {
+                await authRepository.addUser(result.value);
+            }
+            else {
+                await authRepository.addTenant(userRecord.email, tenantCode);
+            }
+            logger.debug(`assigned the user ${userRecord.email} to the tenant and added role 'tenant-user'`)
+        }
+        else {
+            logger.debug("validation result:", result);
+            throw new Error("Error in assigning the roles and tenants to the user.");
+        }
+
+        // assigning the claims to tenant Admin.
+        await tenantModel.setCustomClaimByName(userRecord.uid, "tenantCode", [tenantCode]);
+        await tenantModel.setCustomClaimByName(userRecord.uid, "roles", ["tenant-user"]);
+    } catch (error) {
+        logger.error('Error in assigning user to tenant', error);
+        throw new Error("Error in assigning user to tenant");
+    }
+}
+
 exports.impersonateSuperAdmin = async (userInfo, tenantCode) => {
     try {
         // Assigning the claims to impersonate tenant Admin.
@@ -100,7 +152,7 @@ async function getUserByEmail(email) {
         return userRecord;
     }
     catch (error) {
-        logger.error("Error in retrieving the user by email", error);
+        logger.debug(`unable to find the user with email: ${email}`, error);
         return null;
     }
 }

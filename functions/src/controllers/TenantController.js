@@ -1,11 +1,11 @@
 const tenantModel = require('../models/TenantModel');
 const tenantService = require("../services/tenant-servce")
-const { TenantSchema } = require('../schema/small-schema');
+const { TenantSchema, AssignTenantUserSchema } = require('../schema/small-schema');
 exports.createTenant = async (req, res) => {
     try {
         const { error, value } = TenantSchema.validate(req.body, { abortEarly: false });
         if (error) {
-            return res.status(500).json({ validations : error.details });
+            return res.status(500).json({ validations: error.details });
         }
         const { code, name, adminEmail } = value;
         if (await tenantModel.checkTenantExists(code)) {
@@ -34,6 +34,25 @@ exports.addSuperAdmin = async (req, res) => {
         //console.log("Adding Claims to admin user");
         tenantModel.setCustomClaimRole(req.user.uid, "tenant-admin");
         return res.status(200).json({ message: 'current logged in user set as tenant admin', email: req.user.email });
+    } catch (error) {
+        return res.status(500).json({ error: error });
+    }
+}
+
+exports.addUserToTenant = async (req, res) => {
+    try {
+        console.log("Adding user to tenant -- Body#############################:", req.body);
+        const { error, value } = AssignTenantUserSchema.validate(req.body, { abortEarly: false });
+        console.log("Adding user to tenant:", error, value);
+        if (error) {
+            return res.status(500).json({ validations: error.details });
+        }
+        await tenantService.assignUserToTenant(value.tenantCode, value.userEmail);
+        return res.status(200).json({
+            message: 'User added to tenant successfully.',
+            tenantCode: value.tenantCode,
+            userEmail: value.userEmail
+        });
     } catch (error) {
         return res.status(500).json({ error: error });
     }
