@@ -149,45 +149,45 @@ describe('Tenant Service', () => {
 
     });
 
-    //describe('getAllTenants', () => {
-    //    it('should retrieve all tenants successfully', async () => {
-    //        const tenants = [{ tenantCode: 'tenant1' }, { tenantCode: 'tenant2' }];
-    //        tenantModel.getAllTenants.mockResolvedValue(tenants);
+    describe('getAllTenants', () => {
+        it('should retrieve all tenants successfully', async () => {
+            const tenants = [{ tenantCode: 'tenant1' }, { tenantCode: 'tenant2' }];
+            tenantModel.getAllTenants.mockResolvedValue(tenants);
 
-    //        const result = await tenantService.getAllTenants();
+            const result = await tenantService.getAllTenants();
 
-    //        expect(result).toEqual(tenants);
-    //        expect(tenantModel.getAllTenants).toHaveBeenCalled();
-    //    });
+            expect(result).toEqual(tenants);
+            expect(tenantModel.getAllTenants).toHaveBeenCalled();
+        });
 
-    //    it('should throw an error if retrieving tenants fails', async () => {
-    //        tenantModel.getAllTenants.mockRejectedValue(new Error('Database error'));
+        it('should throw an error if retrieving tenants fails', async () => {
+            tenantModel.getAllTenants.mockRejectedValue(new Error('Database error'));
 
-    //        await expect(tenantService.getAllTenants()).rejects.toThrow('Error in retrieving all tenants');
-    //        expect(logger.error).toHaveBeenCalledWith('Error in retrieving all tenants', expect.any(Error));
-    //    });
-    //});
+            await expect(tenantService.getAllTenants()).rejects.toThrow('Error in retrieving all tenants');
+            expect(logger.error).toHaveBeenCalledWith('Error in retrieving all tenants', expect.any(Error));
+        });
+    });
 
-    //describe('getUsersByTenant', () => {
-    //    it('should retrieve users by tenant successfully', async () => {
-    //        const tenantCode = 'tenant123';
-    //        const users = [{ uid: 'user1' }, { uid: 'user2' }];
-    //        tenantModel.getTenantUsers.mockResolvedValue(users);
+    describe('getUsersByTenant', () => {
+        it('should retrieve users by tenant successfully', async () => {
+            const tenantCode = 'tenant123';
+            const users = [{ uid: 'user1' }, { uid: 'user2' }];
+            tenantModel.getTenantUsers.mockResolvedValue(users);
 
-    //        const result = await tenantService.getUsersByTenant(tenantCode);
+            const result = await tenantService.getUsersByTenant(tenantCode);
 
-    //        expect(result).toEqual(users);
-    //        expect(tenantModel.getTenantUsers).toHaveBeenCalledWith(tenantCode);
-    //    });
+            expect(result).toEqual(users);
+            expect(tenantModel.getTenantUsers).toHaveBeenCalledWith(tenantCode);
+        });
 
-    //    it('should throw an error if retrieving users fails', async () => {
-    //        const tenantCode = 'tenant123';
-    //        tenantModel.getTenantUsers.mockRejectedValue(new Error('Database error'));
+        it('should throw an error if retrieving users fails', async () => {
+            const tenantCode = 'tenant123';
+            tenantModel.getTenantUsers.mockRejectedValue(new Error('Database error'));
 
-    //        await expect(tenantService.getUsersByTenant(tenantCode)).rejects.toThrow('Error in retrieving users by tenant');
-    //        expect(logger.error).toHaveBeenCalledWith('Error in retrieving users by tenant', expect.any(Error));
-    //    });
-    //});
+            await expect(tenantService.getUsersByTenant(tenantCode)).rejects.toThrow('Error in retrieving users by tenant');
+            expect(logger.error).toHaveBeenCalledWith('Error in retrieving users by tenant', expect.any(Error));
+        });
+    });
 
     //describe('impersonateSuperAdmin', () => {
     //    it('should impersonate super admin successfully', async () => {
