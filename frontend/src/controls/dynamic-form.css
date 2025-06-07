@@ -1,0 +1,17 @@
+.dynamic-form {
+  display: grid;
+  gap: 16px;
+}
+
+.dynamic-form.single {
+  grid-template-columns: 1fr;
+}
+
+.dynamic-form.two-column {
+  grid-template-columns: 1fr 1fr;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}

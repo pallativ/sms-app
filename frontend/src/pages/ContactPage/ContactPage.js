@@ -6,6 +6,7 @@ import { useAuth } from "../../authentication/AuthContext";
 import { getAllContacts } from "../../ApiServices/ContactApiService";
 import GenericForm from "../../components/Library/GenericForm";
 import TenantForm from "../../components/Tenants/TenantForm";
+import DynamicForm from "../../controls/dynamic-form";
 
 const ContactsPage = () => {
     const [contacts, setContacts] = useState([]);
@@ -62,8 +63,15 @@ const ContactsPage = () => {
                 <h2 className="text-xl font-bold mb-4">
                     Dynamic Form with Syncfusion
                 </h2>
-                <GenericForm formFields={formFields} onSubmit={handleSubmit} />
-                <TenantForm />
+                {/* <GenericForm formFields={formFields} onSubmit={handleSubmit} />
+                <TenantForm /> */}
+
+
+            </div>
+            <div style={{ width: "50%" }}>
+                  <DynamicForm />
+                  <br></br>
+                <DynamicForm layout="two-column"/>
             </div>
         </React.Fragment>
     );

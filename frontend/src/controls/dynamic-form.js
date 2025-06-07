@@ -1,0 +1,144 @@
+import React, { useRef, useEffect } from "react";
+import { FormValidator } from "@syncfusion/ej2-react-inputs";
+import { ButtonComponent } from "@syncfusion/ej2-react-buttons";
+import { TextBoxComponent, NumericTextBoxComponent } from "@syncfusion/ej2-react-inputs";
+import { DropDownListComponent } from "@syncfusion/ej2-react-dropdowns";
+import { DatePickerComponent } from "@syncfusion/ej2-react-calendars";
+import { CheckBoxComponent } from "@syncfusion/ej2-react-buttons";
+import { TextAreaComponent } from '@syncfusion/ej2-react-inputs';
+import "./dynamic-form.css";
+
+const DynamicForm = ({ layout = "single" }) => {
+  const formRef = useRef(null);
+  const validatorRef = useRef(null);
+
+  const fields = [
+    { code: "firstName", name: "First Name", type: "text", required: true, minLength: 3 },
+    { code: "email", name: "Email", type: "email", required: true, email: true },
+    { code: "password", name: "Password", type: "password", required: true, minLength: 6 },
+    { code: "dob", name: "Date of Birth", type: "date", required: false },
+    { code: "gender", name: "Gender", type: "enum", required: true, options: ["Male", "Female", "Other"] },
+    { code: "age", name: "Age", type: "number", required: true, min: 18, max: 100 },
+    { code: "subscribe", name: "Subscribe to Newsletter", type: "boolean", required: false },
+    { code: "comments", name: "Comments", type: "textArea", required: false, maxLength: 200 },
+  ];
+
+  useEffect(() => {
+    if (formRef.current) {
+      const rules = fields.reduce((acc, field) => {
+        const fieldRules = {};
+        if (field.required) fieldRules.required = true;
+        if (field.minLength) fieldRules.minLength = field.minLength;
+        if (field.maxLength) fieldRules.maxLength = field.maxLength;
+        if (field.email) fieldRules.email = true;
+        if (field.min !== undefined) fieldRules.range = [field.min, field.max];
+
+        acc[field.code] = fieldRules;
+        return acc;
+      }, {});
+
+      validatorRef.current = new FormValidator(formRef.current, { rules });
+    }
+
+    return () => {
+      if (validatorRef.current) {
+        validatorRef.current.destroy();
+      }
+    };
+  }, [fields]);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (validatorRef.current.validate()) {
+      const formData = new FormData(formRef.current);
+      const data = Object.fromEntries(formData.entries());
+      console.log("Form Data:", data);
+    }
+  };
+
+  const renderField = (field) => {
+    switch (field.type) {
+      case "text":
+      case "email":
+      case "password":
+        return (
+          <TextBoxComponent
+            floatLabelType="Auto"
+            id={field.code}
+            name={field.code}
+            placeholder={field.name}
+            type={field.type}
+            cssClass="e-outline"
+          />
+        );
+      case "date":
+        return (
+          <DatePickerComponent
+            id={field.code}
+            name={field.code}
+            cssClass="e-outline"
+            floatLabelType="Auto"
+            placeholder={field.name}
+          />
+        );
+      case "enum":
+        return (
+          <DropDownListComponent
+            id={field.code}
+            name={field.code}
+              floatLabelType="Auto"
+             cssClass="e-outline"
+            dataSource={field.options}
+            placeholder={field.name}
+          />
+        );
+      case "number":
+        return (
+          <NumericTextBoxComponent
+            id={field.code}
+            name={field.code}
+              floatLabelType="Auto"
+             cssClass="e-outline"
+            placeholder={field.name}
+          />
+        );
+      case "boolean":
+        return (
+          <CheckBoxComponent
+            id={field.code}
+            name={field.code}
+            label={field.name}
+          />
+        );
+      case "textArea":
+        return (
+          <TextAreaComponent
+            name={field.code}
+            placeholder={field.name}
+            floatLabelType="Auto"
+            cssClass="e-outline"
+            rows="4"
+            cols="240"
+          ></TextAreaComponent>
+        );
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <form ref={formRef} onSubmit={handleSubmit} className={`dynamic-form ${layout}`}>
+      {fields.map((field) => (
+        <div key={field.code} className="form-group">
+          {renderField(field)}
+        </div>
+      ))}
+      <ButtonComponent type="submit">Submit</ButtonComponent>
+    </form>
+  );
+};
+
+export default DynamicForm;
+
+
+
