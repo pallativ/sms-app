@@ -33,6 +33,7 @@ jest.mock('../../src/controllers/TenantController', () => ({
     getTenantUsers: jest.fn((req, res) => res.status(200).send({ message: 'Super admin added' })),
     getTenantsByUserEmail: jest.fn((req, res) => res.status(200).send({ message: 'Super admin added' })),
     getAllUsers: jest.fn((req, res) => res.status(200).send({ message: 'Super admin added' })),
+    enableOrDisableUser: jest.fn((req, res) => res.status(200).send({ message: 'User enabled/disabled' })),
 }));
 
 const app = express();

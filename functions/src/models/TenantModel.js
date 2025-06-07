@@ -119,3 +119,32 @@ exports.getAllTenants = async () => {
         throw new Error("Error in fetching tenants");
     }
 }
+
+exports.getUserByEmail = async (email) => {
+    try {
+        const userRecord = await auth.getUserByEmail(email);
+        return userRecord;
+    }
+    catch (error) {
+        logger.debug(`unable to find the user with email: ${email}`, error);
+        return null;
+    }
+}
+
+
+// create a method to disable the user using auth
+exports.enableOrDisableUser = async (email, isEnabled) => {
+    try {
+        const userRecord = await this.getUserByEmail(email);
+        if (!userRecord) {
+            throw new Error(`User with email ${email} not found`);
+        }
+        await auth.updateUser(userRecord.uid, { disabled: !isEnabled });
+        const action = isEnabled ? "enabled" : "disabled";
+        logger.info(`User ${email} has been ${action}.`);
+    } catch (error) {
+        logger.error("Error updating user status", error);
+        throw new Error("Error in updating user status");
+    }
+}
+

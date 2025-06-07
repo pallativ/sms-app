@@ -5,6 +5,8 @@ jest.mock('../../src/models/TenantModel', () => ({
     assignUserToTenant: jest.fn(),
     setCustomClaimByName: jest.fn(),
     checkTenantExists: jest.fn(() => Promise.resolve(false)),
+    getUserByEmail: jest.fn(() => Promise.resolve(null)),
+    enableOrDisableUser: jest.fn(),
 }));
 
 jest.mock('../../firebaseSetup', () => ({
@@ -86,7 +88,7 @@ describe('Tenant Service', () => {
             };
 
             tenantModel.createTenant.mockResolvedValue(tenantCode);
-            auth.getUserByEmail.mockResolvedValue(userRecord);
+            tenantModel.getUserByEmail.mockResolvedValue(userRecord);
             auth.createUser.mockResolvedValue(userRecord);
             tenantModel.assignUserToTenant.mockResolvedValue();
             AuthorizationRepository.prototype.isValid.mockResolvedValue({ isValid: true, value: userInfo });
@@ -127,7 +129,7 @@ describe('Tenant Service', () => {
             tenantModel.setCustomClaimByName.mockResolvedValue();
 
             const result = await tenantService.createTenant(tenantDetails);
-            //console.log("result:", result);
+            console.log("result:", result);
             expect(result).toEqual({ tenantCode, uid: userRecord.uid });
             expect(tenantModel.createTenant).toHaveBeenCalledWith(tenantDetails);
             expect(tenantModel.assignUserToTenant).toHaveBeenCalledWith(tenantCode, userRecord.uid, userRecord.email);

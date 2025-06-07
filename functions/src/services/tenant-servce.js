@@ -11,7 +11,7 @@ exports.createTenant = async (tenantDetails) => {
         const tenantCode = await tenantModel.createTenant(tenantDetails);
 
         // fetch user by email address.
-        let userRecord = await getUserByEmail(tenantDetails.adminEmail)
+        let userRecord = await tenantModel.getUserByEmail(tenantDetails.adminEmail)
 
         // Check if the user already exists.
         if (userRecord == null) {
@@ -86,7 +86,7 @@ exports.getTenantUsers = async (tenantCode) => {
 exports.assignUserToTenant = async (tenantCode, email) => {
     try {
         // fetch user by email address.
-        let userRecord = await getUserByEmail(email)
+        let userRecord = await tenantModel.getUserByEmail(email)
 
         // Check if the user already exists.
         if (userRecord == null) {
@@ -148,7 +148,7 @@ exports.impersonateSuperAdmin = async (userInfo, tenantCode) => {
 
 exports.getTenantsByUserEmail = async (email) => {
     try {
-        const userRecord = await getUserByEmail(email);
+        const userRecord = await tenantModel.getUserByEmail(email);
         if (!userRecord) {
             throw new Error(`User with email ${email} not found`);
         }
@@ -160,16 +160,7 @@ exports.getTenantsByUserEmail = async (email) => {
     }
 }
 
-async function getUserByEmail(email) {
-    try {
-        const userRecord = await auth.getUserByEmail(email);
-        return userRecord;
-    }
-    catch (error) {
-        logger.debug(`unable to find the user with email: ${email}`, error);
-        return null;
-    }
-}
+
 
 exports.getAllUsers = async () => {
     try {

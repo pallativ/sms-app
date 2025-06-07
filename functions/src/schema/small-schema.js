@@ -11,4 +11,9 @@ const AssignTenantUserSchema = Joi.object({
     userEmail: Joi.string().email().required(),
 })
 
-module.exports = { TenantSchema, AssignTenantUserSchema };
+const UserEnableSchema = Joi.object({
+    email: Joi.string().email().required(),
+    isEnabled: Joi.boolean().required(),
+});
+
+module.exports = { TenantSchema, AssignTenantUserSchema, UserEnableSchema };

@@ -216,7 +216,6 @@ describe('Multiple Users to a tenant', () => {
 });
 
 
-
 describe('Get All Users', () => {
     let idToken;
     const platformAdminEmail = generateRandomEmail();
@@ -269,5 +268,53 @@ describe('Get All Users', () => {
         expect(allUsers.some(user => user.email === user1_email)).toBe(true);
         expect(allUsers.some(user => user.email === user2_email)).toBe(true);
         expect(allUsers.some(user => user.email === user3_email)).toBe(true);
+    });
+});
+
+describe('Enable or Disable User', () => {
+    let idToken;
+    const platformAdminEmail = generateRandomEmail();
+    let usersToDelete = [];
+    deleteUsers = async () => {
+        for (const user of usersToDelete) {
+            await auth.deleteUser(user.uid);
+        }
+    }
+    beforeAll(async () => {
+        const user = {
+            email: platformAdminEmail,
+            password: "Dhishakti@123",
+            displayName: platformAdminEmail,
+        };
+        let new_user = await auth.createUser(user);
+        TenantModel.setCustomClaimByName(new_user.uid, "isPlatformAdmin", true);
+        idToken = await getIdToken(new_user.uid, { "isPlatformAdmin": true });
+    });
+    afterAll(async () => {
+        await deleteUsers();
+    });
+    it("should enable or disable a user", async () => {
+        const user_email = generateRandomEmail();
+        const user = await auth.createUser({ email: user_email, password: "Password@123" });
+        usersToDelete.push(user);
+
+        // Enable the user
+        const enableResponse = await request(app).post('/tenants/enable-disable-user')
+            .set('Authorization', `Bearer ${idToken}`)
+            .send({ email: user_email, isEnabled: true });
+        expect(enableResponse.status).toBe(200);
+        expect(enableResponse.body.message).toBe('User enabled successfully');
+        // Verify the user is enabled
+        const enabledUser = await auth.getUser(user.uid);
+        expect(enabledUser.disabled).toBe(false);
+        // Disable the user
+        const disableResponse = await request(app).post('/tenants/enable-disable-user')
+            .set('Authorization', `Bearer ${idToken}`)
+            .send({ email: user_email, isEnabled: false });
+        expect(disableResponse.status).toBe(200);
+        expect(disableResponse.body.message).toBe('User disabled successfully');
+        // Verify the user is disabled
+        const disabledUser = await auth.getUser(user.uid);
+        expect(disabledUser.disabled).toBe(true);
     });
 });

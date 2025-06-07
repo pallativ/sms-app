@@ -1,7 +1,6 @@
 const tenantModel = require('../models/TenantModel');
 const tenantService = require("../services/tenant-servce")
-const { TenantSchema, AssignTenantUserSchema } = require('../schema/small-schema');
-const { auth } = require('../../firebaseSetup');
+const { TenantSchema, AssignTenantUserSchema, UserEnableSchema } = require('../schema/small-schema');
 exports.createTenant = async (req, res) => {
     try {
         const { error, value } = TenantSchema.validate(req.body, { abortEarly: false });
@@ -88,7 +87,24 @@ exports.getAllUsers = async (req, res) => {
     } catch (error) {
         return res.status(500).send({ error });
     }
-};
+}
+
+exports.enableOrDisableUser = async (req, res) => {
+    try {
+        const { error, value } = UserEnableSchema.validate(req.body);
+        if (error) {
+            return res.status(400).json({ validations: error.details });
+        }
+
+        if(!await tenantModel.getUserByEmail(value.email)) {
+            return res.status(404).json({ message: `User with email '${value.email}' does not exist` });
+        }
+        await tenantModel.enableOrDisableUser(value.email, value.isEnabled);
+        return res.status(200).json({ message: `User ${value.isEnabled ? 'enabled' : 'disabled'} successfully`, email: value.email });
+    } catch (error) {
+        return res.status(500).json({ error: error.message });
+    }
+}
 
 
 

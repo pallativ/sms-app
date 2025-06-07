@@ -11,5 +11,6 @@ router.get('/:tenantId/users', requirePlatformAdmin, TenantController.getTenantU
 router.get('/all-users', requirePlatformAdmin, TenantController.getAllUsers);
 router.get('/get-user-tenants', Authenticate, TenantController.getTenantsByUserEmail);
 router.post('/set-tenant-admin', requirePlatformAdmin, TenantController.addSuperAdmin);
+router.post('/enable-disable-user', requirePlatformAdmin, TenantController.enableOrDisableUser);
 
 module.exports = router;
