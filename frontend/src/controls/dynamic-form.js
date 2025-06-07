@@ -13,14 +13,17 @@ const DynamicForm = ({ layout = "single" }) => {
   const validatorRef = useRef(null);
 
   const fields = [
-    { code: "firstName", name: "First Name", type: "text", required: true, minLength: 3 },
-    { code: "email", name: "Email", type: "email", required: true, email: true },
-    { code: "password", name: "Password", type: "password", required: true, minLength: 6 },
-    { code: "dob", name: "Date of Birth", type: "date", required: false },
-    { code: "gender", name: "Gender", type: "enum", required: true, options: ["Male", "Female", "Other"] },
-    { code: "age", name: "Age", type: "number", required: true, min: 18, max: 100 },
-    { code: "subscribe", name: "Subscribe to Newsletter", type: "boolean", required: false, useSwitch: true },
-    { code: "comments", name: "Comments", type: "textArea", required: false, maxLength: 200 },
+    { code: "firstName", name: "First Name", type: "text", required: true, minLength: 3, value: "Veera" },
+    { code: "lastName", name: "Last Name", type: "text", required: true, minLength: 3, value: "Pallati" },
+    { code: "phoneNumber", name: "Phone Number", type: "text", required: true, pattern: "\\d{10}", value: "" },
+    { code: "email", name: "Email", type: "email", required: true, email: true, value: "pkondalu@gmail.com"},
+    { code: "password", name: "Password", type: "password", required: true, minLength: 6, value: "123456" },
+    { code: "confirmPassword", name: "Confirm Password", type: "password", required: true, minLength: 6, value: "123456" },
+    { code: "dob", name: "Date of Birth", type: "date", required: false, value: "18/04/2025" },
+    { code: "gender", name: "Gender", type: "enum", required: true, options: ["Male", "Female", "Other"], value :"Male" },
+    { code: "age", name: "Age", type: "number", required: true, min: 18, max: 100, value: 30 },
+    { code: "subscribe", name: "Subscribe to Newsletter", type: "boolean", required: false, useSwitch: true, value: true },
+    { code: "comments", name: "Comments", type: "textArea", required: false, maxLength: 200, value: "This is a sample comment." },
   ];
 
   useEffect(() => {
@@ -69,6 +72,7 @@ const DynamicForm = ({ layout = "single" }) => {
             placeholder={field.name}
             type={field.type}
             cssClass="e-outline"
+            value={field.value || ""} // Bind the value from the field
           />
         );
       case "date":
@@ -79,6 +83,7 @@ const DynamicForm = ({ layout = "single" }) => {
             cssClass="e-outline"
             floatLabelType="Auto"
             placeholder={field.name}
+            value={field.value || null} // Bind the value from the field
           />
         );
       case "enum":
@@ -90,6 +95,7 @@ const DynamicForm = ({ layout = "single" }) => {
             cssClass="e-outline"
             dataSource={field.options}
             placeholder={field.name}
+            value={field.value || null} // Bind the value from the field
           />
         );
       case "number":
@@ -100,22 +106,27 @@ const DynamicForm = ({ layout = "single" }) => {
             floatLabelType="Auto"
             cssClass="e-outline"
             placeholder={field.name}
+            value={field.value || null} // Bind the value from the field
           />
         );
       case "boolean":
         return field.useSwitch ? (
-          <SwitchComponent
-            id={field.code}
-            name={field.code}
-            checked={false}
-            onLabel="Yes"
-            offLabel="No"
-          />
+          <div className="switch-container">
+            <label htmlFor={field.code} className="switch-label">{field.name}</label>
+            <SwitchComponent
+              id={field.code}
+              name={field.code}
+              checked={field.value || false} // Bind the value from the field
+              onLabel="Yes"
+              offLabel="No"
+            />
+          </div>
         ) : (
           <CheckBoxComponent
             id={field.code}
             name={field.code}
             label={field.name}
+            checked={field.value || false} // Bind the value from the field
           />
         );
       case "textArea":
@@ -127,6 +138,7 @@ const DynamicForm = ({ layout = "single" }) => {
             cssClass="e-outline"
             rows="4"
             cols="240"
+            value={field.value || ""} // Bind the value from the field
           ></TextAreaComponent>
         );
       default:

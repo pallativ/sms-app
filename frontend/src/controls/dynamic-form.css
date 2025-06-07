@@ -50,3 +50,20 @@
     font-size: 14px;
     /* Adjust font size */
 }
+
+/* Style for the switch container */
+.switch-container {
+  display: flex;
+  align-items: center; /* Align label and switch vertically */
+  gap: 10px; /* Add spacing between the label and the switch */
+}
+
+/* Style for the switch label to match the text box float label */
+.switch-label {
+  margin-left: 2px; /* Adjust spacing to match the float label */
+  font-size: 14px; /* Match the font size of the float label */
+  font-weight: 450; /* Match the font weight of the float label */
+  color: #353333; /* Match the color of the float label */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Match the font family */
+  margin-bottom: 0; /* Ensure consistent spacing */
+}
