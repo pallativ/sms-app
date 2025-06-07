@@ -4,8 +4,8 @@ import { ButtonComponent } from "@syncfusion/ej2-react-buttons";
 import { TextBoxComponent, NumericTextBoxComponent } from "@syncfusion/ej2-react-inputs";
 import { DropDownListComponent } from "@syncfusion/ej2-react-dropdowns";
 import { DatePickerComponent } from "@syncfusion/ej2-react-calendars";
-import { CheckBoxComponent } from "@syncfusion/ej2-react-buttons";
-import { TextAreaComponent } from '@syncfusion/ej2-react-inputs';
+import { CheckBoxComponent, SwitchComponent } from "@syncfusion/ej2-react-buttons";
+import { TextAreaComponent } from "@syncfusion/ej2-react-inputs";
 import "./dynamic-form.css";
 
 const DynamicForm = ({ layout = "single" }) => {
@@ -19,7 +19,7 @@ const DynamicForm = ({ layout = "single" }) => {
     { code: "dob", name: "Date of Birth", type: "date", required: false },
     { code: "gender", name: "Gender", type: "enum", required: true, options: ["Male", "Female", "Other"] },
     { code: "age", name: "Age", type: "number", required: true, min: 18, max: 100 },
-    { code: "subscribe", name: "Subscribe to Newsletter", type: "boolean", required: false },
+    { code: "subscribe", name: "Subscribe to Newsletter", type: "boolean", required: false, useSwitch: true },
     { code: "comments", name: "Comments", type: "textArea", required: false, maxLength: 200 },
   ];
 
@@ -86,8 +86,8 @@ const DynamicForm = ({ layout = "single" }) => {
           <DropDownListComponent
             id={field.code}
             name={field.code}
-              floatLabelType="Auto"
-             cssClass="e-outline"
+            floatLabelType="Auto"
+            cssClass="e-outline"
             dataSource={field.options}
             placeholder={field.name}
           />
@@ -97,13 +97,21 @@ const DynamicForm = ({ layout = "single" }) => {
           <NumericTextBoxComponent
             id={field.code}
             name={field.code}
-              floatLabelType="Auto"
-             cssClass="e-outline"
+            floatLabelType="Auto"
+            cssClass="e-outline"
             placeholder={field.name}
           />
         );
       case "boolean":
-        return (
+        return field.useSwitch ? (
+          <SwitchComponent
+            id={field.code}
+            name={field.code}
+            checked={false}
+            onLabel="Yes"
+            offLabel="No"
+          />
+        ) : (
           <CheckBoxComponent
             id={field.code}
             name={field.code}
@@ -133,7 +141,9 @@ const DynamicForm = ({ layout = "single" }) => {
           {renderField(field)}
         </div>
       ))}
-      <ButtonComponent type="submit">Submit</ButtonComponent>
+      <div className="submit-button-container">
+        <ButtonComponent type="submit" cssClass="e-primary">Submit</ButtonComponent>
+      </div>
     </form>
   );
 };
