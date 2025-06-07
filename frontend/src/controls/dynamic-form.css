@@ -1,7 +1,7 @@
 /* General styles for the form */
 .dynamic-form {
     display: grid;
-    gap: 20px;
+    gap: 24px;
 }
 
 .dynamic-form.single {
@@ -10,6 +10,8 @@
 
 .dynamic-form.two-column {
     grid-template-columns: 1fr 1fr;
+    gap: 60px; /* Horizontal and vertical gap */
+    row-gap: 24px; /* Increase the vertical gap between rows */
 }
 
 /* Form group styling */

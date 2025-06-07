@@ -23,6 +23,7 @@ const DynamicForm = ({ layout = "single" }) => {
     { code: "gender", name: "Gender", type: "enum", required: true, options: ["Male", "Female", "Other"], value :"Male" },
     { code: "age", name: "Age", type: "number", required: true, min: 18, max: 100, value: 30 },
     { code: "subscribe", name: "Subscribe to Newsletter", type: "boolean", required: false, useSwitch: true, value: true },
+    { code: "subscribe2", name: "Subscribe to Newsletter", type: "boolean", required: false, useSwitch: false, value: true },
     { code: "comments", name: "Comments", type: "textArea", required: false, maxLength: 200, value: "This is a sample comment." },
   ];
 
