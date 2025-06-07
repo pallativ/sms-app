@@ -8,6 +8,7 @@ router.post('/', requirePlatformAdmin, TenantController.createTenant);
 router.get('/', requirePlatformAdmin, TenantController.getAllTenants);
 router.post('/assign-user', requirePlatformAdmin, TenantController.addUserToTenant);
 router.get('/:tenantId/users', requirePlatformAdmin, TenantController.getTenantUsers);
+router.get('/all-users', requirePlatformAdmin, TenantController.getAllUsers);
 router.get('/get-user-tenants', Authenticate, TenantController.getTenantsByUserEmail);
 router.post('/set-tenant-admin', requirePlatformAdmin, TenantController.addSuperAdmin);
 

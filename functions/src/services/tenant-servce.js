@@ -3,7 +3,7 @@ const { auth } = require('../../firebaseSetup');
 const { logger } = require('firebase-functions');
 const AuthorizationRepository = require("../repositories/authorization-repository")
 
-
+const _ = require('lodash');
 exports.createTenant = async (tenantDetails) => {
     try {
 
@@ -170,5 +170,33 @@ async function getUserByEmail(email) {
         return null;
     }
 }
+
+exports.getAllUsers = async () => {
+    try {
+        console.log("Get All Users from platform");
+        let users = [];
+        let nextPageToken;
+        let iterationCount = 0;
+        const maxIterations = 100; // Safeguard against infinite loops
+
+        do {
+            if (iterationCount++ > maxIterations) {
+                throw new Error("Exceeded maximum iterations while fetching users.");
+            }
+            console.log("Fetching users, iteration:", iterationCount);
+            const listUsersResult = await auth.listUsers(1000, nextPageToken);
+            listUsersResult.users.forEach(userRecord => {
+                users.push({ ..._.omit(userRecord, ["passwordHash", "passwordSalt", "customClaims"]) });
+            });
+            nextPageToken = listUsersResult.pageToken;
+            console.log("Next Page Token:", nextPageToken);
+        } while (nextPageToken);
+
+        return users;
+    } catch (error) {
+        console.error("Error fetching users:", error.message);
+        throw error;
+    }
+};
 
 

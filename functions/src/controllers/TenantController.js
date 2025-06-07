@@ -1,6 +1,7 @@
 const tenantModel = require('../models/TenantModel');
 const tenantService = require("../services/tenant-servce")
 const { TenantSchema, AssignTenantUserSchema } = require('../schema/small-schema');
+const { auth } = require('../../firebaseSetup');
 exports.createTenant = async (req, res) => {
     try {
         const { error, value } = TenantSchema.validate(req.body, { abortEarly: false });
@@ -79,5 +80,15 @@ exports.getTenantsByUserEmail = async (req, res) => {
         return res.status(500).json({ error: error });
     }
 }
+
+exports.getAllUsers = async (req, res) => {
+    try {
+        const allTenantUsers = await tenantService.getAllUsers();
+        return res.status(200).send(allTenantUsers);
+    } catch (error) {
+        return res.status(500).send({ error });
+    }
+};
+
 
 

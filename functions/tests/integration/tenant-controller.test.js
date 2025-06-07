@@ -214,3 +214,60 @@ describe('Multiple Users to a tenant', () => {
     })
 
 });
+
+
+
+describe('Get All Users', () => {
+    let idToken;
+    const platformAdminEmail = generateRandomEmail();
+    let usersToDelete = [];
+
+    deleteUsers = async () => {
+        for (const user of usersToDelete) {
+            await auth.deleteUser(user.uid);
+        }
+    }
+
+    beforeAll(async () => {
+        const user = {
+            email: platformAdminEmail,
+            password: "Dhishakti@123",
+            displayName: platformAdminEmail,
+        };
+
+        let new_user = await auth.createUser(user);
+        TenantModel.setCustomClaimByName(new_user.uid, "isPlatformAdmin", true);
+        idToken = await getIdToken(new_user.uid, { "isPlatformAdmin": true });
+    });
+
+    afterAll(async () => {
+        await deleteUsers();
+    });
+
+    it("should return all users in the system", async () => {
+        // Create multiple users
+        const user1_email = generateRandomEmail();
+        const user2_email = generateRandomEmail();
+        const user3_email = generateRandomEmail();
+
+        const user1 = await auth.createUser({ email: user1_email, password: "Password@123" });
+        const user2 = await auth.createUser({ email: user2_email, password: "Password@123" });
+        const user3 = await auth.createUser({ email: user3_email, password: "Password@123" });
+
+        usersToDelete.push(user1, user2, user3);
+
+        // Fetch all users
+        const response = await request(app).get('/tenants/all-users')
+            .set('Authorization', `Bearer ${idToken}`);
+
+        /*console.log("Get All Users Response:", response.body);*/
+        expect(response.status).toBe(200);
+        const allUsers = response.body;
+
+        // Validate the response contains the created users
+        expect(Array.isArray(allUsers)).toBe(true);
+        expect(allUsers.some(user => user.email === user1_email)).toBe(true);
+        expect(allUsers.some(user => user.email === user2_email)).toBe(true);
+        expect(allUsers.some(user => user.email === user3_email)).toBe(true);
+    });
+});
