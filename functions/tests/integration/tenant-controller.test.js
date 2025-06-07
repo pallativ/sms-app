@@ -1,7 +1,7 @@
 ﻿const request = require('supertest');
 const express = require('express');
 const { auth } = require('../../firebaseSetup');
-const TenantRoutes = require('../../src/routes/TenantRoutes');
+const TenantRoutes = require('../../src/routes/tenant-routes');
 const TenantModel = require('../../src/models/TenantModel');
 const app = express();
 app.use(express.json());

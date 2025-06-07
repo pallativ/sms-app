@@ -22,10 +22,10 @@ const { auth } = require('../../firebaseSetup');
 const { logger } = require('firebase-functions');
 const { requirePlatformAdmin, Authenticate } = require('../../src/middleware/VerifyTokenMiddleware');
 
-let TenantRoutes = require('../../src/routes/TenantRoutes');
-const TenantController = require('../../src/controllers/TenantController');
+let TenantRoutes = require('../../src/routes/tenant-routes');
+const TenantController = require('../../src/controllers/tenant-controller');
 
-jest.mock('../../src/controllers/TenantController', () => ({
+jest.mock('../../src/controllers/tenant-controller', () => ({
     createTenant: jest.fn((req, res) => res.status(201).send({ message: 'Tenant created' })),
     getAllTenants: jest.fn((req, res) => res.status(200).send([{ id: 1, name: 'Tenant1' }])),
     addSuperAdmin: jest.fn((req, res) => res.status(200).send({ message: 'Super admin added' })),

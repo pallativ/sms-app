@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { requirePlatformAdmin, Authenticate } = require('../middleware/VerifyTokenMiddleware');
-const TenantController = require('../controllers/TenantController');
+const TenantController = require('../controllers/tenant-controller');
 
 // To create the tenant, we need platform admin role for the below activites.
 router.post('/', requirePlatformAdmin, TenantController.createTenant);
